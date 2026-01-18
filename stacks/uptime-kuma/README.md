@@ -1,36 +1,43 @@
 # Stack: Uptime Kuma
 
-Monitoramento de uptime com interface moderna, suporte a diversos tipos de monitoramento e alertas (Telegram, Discord, etc).
+O **Uptime Kuma** e uma ferramenta de monitoramento auto-hospedada facil de usar, que permite monitorar o tempo de atividade de sites, servidores e containers Docker com alertas integrados.
+
+## Configuracao (.env)
+
+| Variavel | Descricao | Padrao |
+|----------|-----------|--------|
+| UPTIME_KUMA_PORT | Porta local no host para o servico | 3001 |
 
 ## Como Rodar
 
-1. Copie o arquivo .env.example para .env
-2. Suba o container:
-   ```bash
-   docker compose up -d
-   ```
+1. Copie o exemplo: `cp .env.example .env`
+2. Suba a stack: `docker compose up -d`
 
-## Acesso e Seguranca
+## Acesso e Seguranca (Tailscale)
 
-Por seguranca, esta stack escuta apenas em `127.0.0.1`. Para acessar externamente de forma segura, use o Tailscale:
+Por padrao, o Uptime Kuma escuta apenas em `127.0.0.1`. Escolha como deseja expor:
 
-### Via Tailscale Funnel (Publico)
-```bash
-sudo tailscale funnel --bg 3001
-```
+- **Privado (Apenas na VPN):** `sudo tailscale serve --bg 3001`
+- **Publico (Internet):** `sudo tailscale funnel --bg 3001`
 
-### Via Tailscale Serve (Privado na VPN)
-```bash
-sudo tailscale serve --bg 3001
-```
+---
 
-## Caracteristicas
+## 🎯 Proximos Passos (Guia do Tecnico)
 
-- **Rede:** Integrado a rede `llmserver`.
-- **Atualizacao:** Watchtower incluso para manter a stack atualizada.
-- **Monitoramento Docker:** Volume do docker.sock montado (read-only) para monitorar outros containers.
+Apos subir o container e acessar a URL, siga estes passos:
 
-## Gestao de Portas
+1. **Criar Conta Admin:** Defina um usuario e senha fortes imediatamente.
+2. **Configurar Notificacoes:** 
+   - Va em *Settings > Notifications*.
+   - Adicione seu bot do Telegram, Discord ou canal de e-mail.
+3. **Adicionar Monitores:**
+   - Clique em *Add New Monitor*.
+   - Para monitorar containers locais, use o tipo *Docker Container*.
+   - Use o nome do container (ex: `ollama`) gracas a rede `llmserver`.
 
-- **Porta Padrao:** 3001
-- **Conflito?** Caso a porta 3001 esteja em uso, use o range **3045 a 3055** no seu arquivo `.env`.
+---
+
+## Troubleshooting
+
+- **Ver Logs:** `docker logs -f uptime-kuma`
+- **Reiniciar:** `docker compose restart`

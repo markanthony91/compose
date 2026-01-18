@@ -106,3 +106,11 @@ Para evitar colisoes de portas entre stacks no mesmo host:
 - **Regra 45-55:** Caso a porta padrao (ex: `XXXX`) esteja ocupada, a nova porta DEVE ser escolhida dentro do range `X[45-55]`.
   - *Exemplo:* Se a porta `3001` estiver em uso, a nova porta devera ser entre `3045` e `3055`.
 - **Transparencia:** Sempre informe ao tecnico qual porta a stack esta utilizando atraves do arquivo `.env` e do output final.
+
+### 7. Requisitos de Documentacao da Stack (README.md)
+Todo `README.md` dentro de `stacks/[nome]/` DEVE conter:
+- **Visao Geral:** O que e a aplicacao.
+- **Configuracao (`.env`):** Explicacao de cada variavel.
+- **Acesso e Seguranca:** Comandos Tailscale para expor o servico.
+- **Proximos Passos:** Guia passo-a-passo apos o container subir (ex: criar usuario admin, configurar banco).
+- **Troubleshooting:** Comandos basicos de log e reinicializacao.
