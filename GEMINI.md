@@ -16,3 +16,8 @@ Para garantir a confiabilidade das stacks:
 - **Requisito:** Cada stack com `setup.sh` DEVE possuir um arquivo de teste correspondente em `tests/[nome].bats`.
 - **Mocks:** Utilize o arquivo `tests/mocks/system_mocks.bash` para simular comandos de sistema (Docker, Tailscale, ss).
 - **Execucao:** Todos os testes devem passar ao rodar `./run_tests.sh`.
+
+### 10. Design para Testabilidade
+Para que os testes unitarios funcionem:
+- **Guard:** Todo script deve terminar com o bloco condicional `if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then main "$@"; fi`.
+- **Independencia:** Funcoes como `configure_env` devem ser puras e testaveis via `source`.

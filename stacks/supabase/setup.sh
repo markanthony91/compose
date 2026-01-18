@@ -65,4 +65,6 @@ main() {
     log_info "User: supabase / Pass: ${DB_PASSWORD} (Postgres)"
 }
 
-main "$@"
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    main "$@"
+fi

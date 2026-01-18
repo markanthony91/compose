@@ -639,3 +639,8 @@ http:
 - [Watchtower Documentation](https://containrrr.dev/watchtower/)
 - [Tailscale Funnel](https://tailscale.com/kb/1223/funnel)
 - [Tailscale Serve](https://tailscale.com/kb/1242/tailscale-serve)
+
+### 10. Design para Testabilidade
+Para que os testes unitarios funcionem:
+- **Guard:** Todo script deve terminar com o bloco condicional `if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then main "$@"; fi`.
+- **Independencia:** Funcoes como `configure_env` devem ser puras e testaveis via `source`.

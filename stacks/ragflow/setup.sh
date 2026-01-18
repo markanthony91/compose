@@ -23,4 +23,6 @@ main() {
     echo "Acesse em: http://localhost:$(grep RAGFLOW_PORT .env | cut -d= -f2)"
 }
 
-main "$@"
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    main "$@"
+fi

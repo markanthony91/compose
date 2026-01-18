@@ -25,4 +25,6 @@ main() {
     echo "Acesse a API em: http://localhost:$(grep LANGGRAPH_PORT .env | cut -d= -f2)"
 }
 
-main "$@"
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    main "$@"
+fi
