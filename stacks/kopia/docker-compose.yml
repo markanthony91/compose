@@ -1,0 +1,52 @@
+################################################################################
+# Stack: kopia
+# Descricao: Servidor de Backup criptografado com interface Web
+# Autor: Gemini - Aiknow Systems
+# Data: 2026-01-17
+# Versao: 1.0
+# Acesso: tailscale funnel 443 http://localhost:51515
+################################################################################
+
+x-common: &common
+  restart: unless-stopped
+  networks:
+    - llmserver
+  logging:
+    driver: "json-file"
+    options:
+      max-size: "10m"
+      max-file: "3"
+  security_opt:
+    - no-new-privileges:true
+
+services:
+  app:
+    image: kopia/kopia:latest
+    container_name: kopia-server
+    <<: *common
+    ports:
+      - "127.0.0.1:${APP_PORT:-51515}:51515"
+    volumes:
+      - ${REPO_PATH}:/repository
+      - ${DATA_PATH}:/data_to_backup:ro
+      - ./config:/app/config
+      - ./cache:/app/cache
+    command:
+      - server
+      - start
+      - --insecure
+      - --address=0.0.0.0:51515
+      - --server-username=${KOPIA_USER:-admin}
+      - --server-password=${KOPIA_PASS}
+
+  watchtower:
+    image: containrrr/watchtower
+    container_name: kopia-watchtower
+    <<: *common
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 86400 --cleanup --run-once kopia-server
+
+networks:
+  llmserver:
+    external: true
