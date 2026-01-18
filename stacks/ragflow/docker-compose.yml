@@ -1,0 +1,48 @@
+################################################################################
+# Stack: ragflow
+# Descricao: RAG com extração profunda de documentos (Deep Doc Parsing)
+# Autor: Gemini - Aiknow Systems
+################################################################################
+
+x-common: &common
+  restart: unless-stopped
+  networks:
+    - llmserver
+
+services:
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.3
+    container_name: ragflow-es-01
+    <<: *common
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - xpack.security.enabled=false
+    volumes:
+      - ./volumes/es/data:/usr/share/elasticsearch/data
+
+  db:
+    image: mariadb:10.11
+    container_name: ragflow-db
+    <<: *common
+    environment:
+      - MARIADB_ROOT_PASSWORD=${DB_PASSWORD}
+      - MARIADB_DATABASE=ragflow
+    volumes:
+      - ./volumes/db/data:/var/lib/mysql
+
+  server:
+    image: infiniflow/ragflow:v0.11.0
+    container_name: ragflow-server
+    <<: *common
+    ports:
+      - "${RAGFLOW_PORT:-8002}:9380"
+    environment:
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+    depends_on:
+      - db
+      - es01
+
+networks:
+  llmserver:
+    external: true

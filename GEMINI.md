@@ -4,7 +4,7 @@
 |-------|------------|------------|
 | ai-database | 5432 / 6379 | Vetores (RAG) e Filas |
 | supabase | 8000 | Backend Full-stack |
-| qdrant | 6333 / 6334 | Vector DB para RAG |
+| dify | 8001 | Orquestracao de Agentes |
+| ragflow | 8002 | RAG de Documentos Complexos |
 | open-webui | 3000 | Interface IA + RAG |
 | uptime-kuma | 3001 | Monitoramento de Uptime |
-| n8n | 5678 | Automacao |

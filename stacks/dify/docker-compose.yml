@@ -1,0 +1,66 @@
+################################################################################
+# Stack: dify
+# Descricao: Orquestrador de Agentes de IA e RAG
+# Autor: Gemini - Aiknow Systems
+################################################################################
+
+x-common: &common
+  restart: unless-stopped
+  networks:
+    - llmserver
+  logging:
+    driver: "json-file"
+    options:
+      max-size: "10m"
+      max-file: "3"
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: dify-db
+    <<: *common
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: dify
+    volumes:
+      - ./volumes/db/data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:6-alpine
+    container_name: dify-redis
+    <<: *common
+    volumes:
+      - ./volumes/redis/data:/data
+
+  api:
+    image: langgenius/dify-api:0.6.11
+    container_name: dify-api
+    <<: *common
+    environment:
+      - DB_PASSWORD=${DB_PASSWORD}
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+      - SECRET_KEY=${SECRET_KEY}
+    depends_on:
+      - db
+      - redis
+
+  worker:
+    image: langgenius/dify-api:0.6.11
+    container_name: dify-worker
+    <<: *common
+    environment:
+      - DB_PASSWORD=${DB_PASSWORD}
+      - SECRET_KEY=${SECRET_KEY}
+    depends_on:
+      - api
+
+  web:
+    image: langgenius/dify-web:0.6.11
+    container_name: dify-web
+    <<: *common
+    ports:
+      - "${DIFY_PORT:-8001}:3000"
+
+networks:
+  llmserver:
+    external: true
