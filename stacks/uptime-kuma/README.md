@@ -41,3 +41,11 @@ Apos subir o container e acessar a URL, siga estes passos:
 
 - **Ver Logs:** `docker logs -f uptime-kuma`
 - **Reiniciar:** `docker compose restart`
+
+## Instalacao Simplificada (Recomendado)
+
+Esta stack possui um script de instalacao automatica que configura as portas e o Tailscale para voce:
+
+```bash
+sudo bash setup.sh "Uptime Kuma" 3001
+```
