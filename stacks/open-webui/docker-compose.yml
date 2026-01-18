@@ -1,0 +1,63 @@
+################################################################################
+# Stack: open-webui
+# Descricao: Interface web profissional para LLMs com suporte a GPU e RAG
+# Autor: Gemini - Aiknow Systems
+################################################################################
+
+x-common: &common
+  restart: unless-stopped
+  networks:
+    - llmserver
+  logging:
+    driver: "json-file"
+    options:
+      max-size: "10m"
+      max-file: "3"
+
+services:
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:${OPENWEBUI_IMAGE_TAG:-latest}
+    container_name: ${CONTAINER_NAME:-open-webui}
+    <<: *common
+    ports:
+      - "${PORT:-3000}:8080"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    runtime: nvidia
+    volumes:
+      - open-webui:/app/backend/data
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=${GPU:-all}
+      - ENABLE_OLLAMA_API=true
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      - VECTOR_DB=qdrant
+      - QDRANT_URI=${QDRANT_URI}
+      - QDRANT_PREFER_GRPC=${QDRANT_PREFER_GRPC:-true}
+      - QDRANT_GRPC_PORT=${QDRANT_GRPC_PORT:-6334}
+      - RAG_EMBEDDING_ENGINE=${RAG_EMBEDDING_ENGINE:-ollama}
+      - RAG_EMBEDDING_MODEL=${RAG_EMBEDDING_MODEL:-llama3.2}
+      - WEBUI_SECRET_KEY=${WEBUI_SECRET_KEY}
+      - WEBUI_NAME=${WEBUI_NAME:-Aiknow AI}
+      - ENABLE_SIGNUP=${ENABLE_SIGNUP:-false}
+
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower-openwebui
+    <<: *common
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 86400 --cleanup --run-once open-webui
+
+volumes:
+  open-webui:
+    external: true
+    name: ${EXTERNAL_VOLUME_NAME:-openwebui_open-webui}
+
+networks:
+  llmserver:
+    external: true
