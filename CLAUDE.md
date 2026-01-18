@@ -292,13 +292,35 @@ Antes de finalizar qualquer stack:
 
 ## Stacks Existentes
 
-*(Sera atualizado conforme novas stacks forem adicionadas)*
+### n8n (v1.0)
+
+**Descricao:** Workflow automation com PostgreSQL, Redis e Workers.
+
+**Componentes:**
+- PostgreSQL 16 (banco de dados)
+- Redis 7 (gerenciamento de filas)
+- n8n 1.73.1 (interface principal)
+- 2 Workers (processamento paralelo)
+
+**Recursos:**
+- YAML Anchors para reduzir duplicacao
+- Queue mode com Redis
+- Healthchecks em todos os servicos
+- Limites de memoria configurados
+- Labels de identificacao
+
+**Uso:**
+```bash
+cd stacks/n8n
+cp .env.example .env
+docker compose up -d
+```
 
 ## Estatisticas do Projeto
 
 | Metrica | Valor |
 |---------|-------|
-| Stacks | 0 |
+| Stacks | 1 |
 | Templates | 0 |
 | Inicio | 2026-01-18 |
 | Ultima atualizacao | 2026-01-18 |

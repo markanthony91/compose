@@ -39,7 +39,7 @@ docker compose up -d
 
 | Stack | Descricao | Porta |
 |-------|-----------|-------|
-| *(em breve)* | | |
+| [n8n](stacks/n8n/) | Workflow automation com PostgreSQL, Redis e Workers | 5678 |
 
 ## Requisitos
 
