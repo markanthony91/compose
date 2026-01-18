@@ -25,7 +25,7 @@ services:
     container_name: kopia-server
     <<: *common
     ports:
-      - "127.0.0.1:${APP_PORT:-51515}:51515"
+      - "${APP_PORT:-51515}:51515"
     volumes:
       - ${REPO_PATH}:/repository
       - ${DATA_PATH}:/data_to_backup:ro

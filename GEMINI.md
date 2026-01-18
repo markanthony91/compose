@@ -34,10 +34,6 @@ networks:
 - Usar `security_opt: ["no-new-privileges:true"]`. 
 - Limitar logs: `max-size: "10m"`, `max-file: "3"`.
 
-### 5. Padrao Tailscale (Security-First)
-- **REGRA DE OURO:** Portas NUNCA devem ser expostas em `0.0.0.0`.
-- Usar sempre `127.0.0.1:HOST_PORT:CONTAINER_PORT`.
-- O acesso externo deve ser feito via Tailscale Funnel ou Serve.
 
 ## Estrutura do Projeto
 
@@ -79,7 +75,7 @@ services:
     container_name: [nome]-app
     <<: *common
     ports:
-      - "127.0.0.1:${APP_PORT}:[PORTA_INTERNA]"
+      - "${APP_PORT}:[PORTA_INTERNA]"
     volumes:
       - [nome]_data:/data
 ```
@@ -114,3 +110,7 @@ Todo `README.md` dentro de `stacks/[nome]/` DEVE conter:
 - **Acesso e Seguranca:** Comandos Tailscale para expor o servico.
 - **Proximos Passos:** Guia passo-a-passo apos o container subir (ex: criar usuario admin, configurar banco).
 - **Troubleshooting:** Comandos basicos de log e reinicializacao.
+### 5. Padrao de Escuta e Seguranca (Multihome)
+- **Flexibilidade:** Os servicos devem ser acessiveis via Localhost (`127.0.0.1`), Rede Local (ex: `192.168.240.250`) e Tailscale.
+- **Configuracao:** Use a variavel `BIND_IP` no `.env` para controlar a interface de escuta. O padrao devera ser `0.0.0.0` para permitir multihome.
+- **Controle de Acesso:** O bloqueio de acessos externos (Internet Publica) deve ser feito via **Firewall (UFW)** no Host, permitindo apenas as subredes autorizadas (LAN e Tailscale).

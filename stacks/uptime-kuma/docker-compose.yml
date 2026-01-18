@@ -25,7 +25,7 @@ services:
     container_name: uptime-kuma
     <<: *common
     ports:
-      - "127.0.0.1:${UPTIME_KUMA_PORT:-3001}:3001"
+      - "${UPTIME_KUMA_PORT:-3001}:3001"
     volumes:
       - uptime-kuma_data:/app/data
       - /var/run/docker.sock:/var/run/docker.sock:ro
