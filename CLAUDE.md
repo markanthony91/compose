@@ -496,8 +496,11 @@ AWS_SECRET_ACCESS_KEY=
 - [ ] Limites de memoria definidos
 - [ ] security_opt: no-new-privileges
 - [ ] .env.example completo
-- [ ] README.md com Tailscale
-- [ ] Sintaxe validada
+- [ ] README.md com Tailscale e backup
+- [ ] goss.yaml criado (testes)
+- [ ] goss_wait.yaml criado
+- [ ] run_tests.sh criado
+- [ ] Sintaxe validada (`docker compose config`)
 - [ ] CLAUDE.md atualizado
 - [ ] Commit e push
 
@@ -525,6 +528,95 @@ tailscale funnel 443 http://localhost:5678
 | Inicio | 2026-01-18 |
 | Ultima atualizacao | 2026-01-18 |
 
+## Testes com Goss/dcgoss
+
+Toda stack DEVE incluir testes para validar que os servicos estao funcionando.
+
+### Estrutura de Testes
+
+```
+stacks/nome-stack/
+├── docker-compose.yml
+├── .env.example
+├── README.md
+├── goss.yaml           # Testes principais
+├── goss_wait.yaml      # Aguardar servicos
+└── run_tests.sh        # Script de execucao
+```
+
+### Instalacao do dcgoss
+
+```bash
+# Instalar goss + dcgoss
+curl -fsSL https://goss.rocks/install | sh
+```
+
+### Executar Testes
+
+```bash
+cd stacks/nome-stack
+
+# Subir stack
+docker compose up -d
+
+# Executar testes
+./run_tests.sh
+
+# Ou via dcgoss diretamente
+dcgoss run nome-container
+```
+
+### Template goss.yaml
+
+```yaml
+# Portas
+port:
+  tcp:8080:
+    listening: true
+
+# Endpoints HTTP
+http:
+  http://localhost:8080/health:
+    status: 200
+    timeout: 10000
+
+# Processos
+process:
+  node:
+    running: true
+
+# DNS (resolucao na rede)
+dns:
+  postgres:
+    resolvable: true
+
+# Comandos
+command:
+  "app --version":
+    exit-status: 0
+    timeout: 10000
+
+# Arquivos
+file:
+  /data:
+    exists: true
+    filetype: directory
+```
+
+### Template goss_wait.yaml
+
+```yaml
+# Aguardar portas abrirem antes dos testes
+port:
+  tcp:8080:
+    listening: true
+
+http:
+  http://localhost:8080/health:
+    status: 200
+    timeout: 30000
+```
+
 ## Dicas para Claude
 
 1. **Pesquisar versao** - Sempre buscar versao estavel antes de criar stack
@@ -537,9 +629,12 @@ tailscale funnel 443 http://localhost:5678
 8. **.gitignore** - Verificar se existe no projeto
 9. **Validar sintaxe** - `docker compose config` antes de commit
 10. **README completo** - Incluir Tailscale e backup
+11. **Testes Goss** - OBRIGATORIO em toda stack
 
 ## Referencias
 
+- [Goss Documentation](https://goss.readthedocs.io/)
+- [dcgoss - Docker Compose](https://goss.readthedocs.io/en/stable/containers/docker-compose/)
 - [Restic Documentation](https://restic.readthedocs.io/)
 - [Watchtower Documentation](https://containrrr.dev/watchtower/)
 - [Tailscale Funnel](https://tailscale.com/kb/1223/funnel)

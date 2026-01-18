@@ -1,0 +1,30 @@
+################################################################################
+# Goss Wait - Stack n8n
+# Descricao: Aguardar servicos estarem prontos antes dos testes
+# Timeout padrao: 60s com retry a cada 1s
+################################################################################
+
+# ==============================================================================
+# Portas - Aguardar portas abrirem
+# ==============================================================================
+port:
+  # PostgreSQL precisa estar pronto primeiro
+  tcp:5432:
+    listening: true
+
+  # Redis precisa estar pronto
+  tcp:6379:
+    listening: true
+
+  # n8n demora mais para subir
+  tcp:5678:
+    listening: true
+
+# ==============================================================================
+# HTTP - Aguardar endpoints responderem
+# ==============================================================================
+http:
+  # n8n healthcheck - indica que está totalmente pronto
+  http://n8n:5678/healthz:
+    status: 200
+    timeout: 30000

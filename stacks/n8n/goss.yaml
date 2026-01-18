@@ -1,0 +1,86 @@
+################################################################################
+# Testes Goss - Stack n8n
+# Descricao: Validacao dos servicos da stack n8n
+# Executar: dcgoss run n8n
+################################################################################
+
+# ==============================================================================
+# Portas - Verificar se estao escutando
+# ==============================================================================
+port:
+  # n8n principal
+  tcp:5678:
+    listening: true
+    ip:
+      - 0.0.0.0
+
+  # PostgreSQL
+  tcp:5432:
+    listening: true
+
+  # Redis
+  tcp:6379:
+    listening: true
+
+# ==============================================================================
+# HTTP - Verificar endpoints
+# ==============================================================================
+http:
+  # n8n healthcheck
+  http://n8n:5678/healthz:
+    status: 200
+    timeout: 10000
+    allow-insecure: false
+
+# ==============================================================================
+# Processos - Verificar se estao rodando
+# ==============================================================================
+process:
+  # n8n usa node
+  node:
+    running: true
+
+# ==============================================================================
+# DNS - Verificar resolucao de nomes na rede
+# ==============================================================================
+dns:
+  postgres:
+    resolvable: true
+    timeout: 5000
+
+  redis:
+    resolvable: true
+    timeout: 5000
+
+  n8n:
+    resolvable: true
+    timeout: 5000
+
+# ==============================================================================
+# Comandos - Verificar comandos especificos
+# ==============================================================================
+command:
+  # Verificar versao do n8n
+  "n8n --version":
+    exit-status: 0
+    timeout: 10000
+
+  # Verificar conexao com PostgreSQL
+  "pg_isready -h postgres -U ${POSTGRES_USER:-n8n}":
+    exit-status: 0
+    timeout: 10000
+
+  # Verificar conexao com Redis
+  "redis-cli -h redis -a ${REDIS_PASSWORD:-changeme} ping":
+    exit-status: 0
+    stdout:
+      - PONG
+    timeout: 10000
+
+# ==============================================================================
+# Arquivos - Verificar se existem
+# ==============================================================================
+file:
+  /home/node/.n8n:
+    exists: true
+    filetype: directory
