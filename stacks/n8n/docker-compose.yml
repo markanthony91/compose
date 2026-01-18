@@ -152,7 +152,7 @@ services:
       N8N_LOG_LEVEL: ${N8N_LOG_LEVEL:-info}
       N8N_LOG_OUTPUT: console
     ports:
-      - "127.0.0.1:${N8N_PORT:-5678}:5678"
+      - "${N8N_PORT:-5678}:5678"
     depends_on:
       postgres:
         condition: service_healthy

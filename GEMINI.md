@@ -84,7 +84,6 @@ services:
 
 - [ ] Arquivo `docker-compose.yml` segue o padrão de metadados.
 - [ ] Arquivo `.env.example` criado com todas as variáveis (sem valores sensíveis).
-- [ ] Portas restritas a `127.0.0.1`.
 - [ ] Rede `llmserver` configurada como externa.
 - [ ] Watchtower e Backup incluídos.
 - [ ] `README.md` da stack explica como ativar o Tailscale Funnel.
@@ -93,7 +92,7 @@ services:
 
 1. **Pesquise a Versão:** Antes de sugerir uma imagem, verifique qual a última versão estável estável (evite bugs de dia zero).
 2. **Modularidade:** Use YAML Anchors (`&common`, `*common`) para manter o arquivo limpo.
-3. **Didática:** Explique no `README.md` da stack por que estamos usando `127.0.0.1`.
+3. **Didática:** Explique no `README.md` da stack por que estamos usando Multihome (LAN/VPN).
 4. **Próximos Passos:** Ao final do deploy, sempre mostre o comando do Tailscale para expor o app.
 
 ### 6. Gestao de Portas e Resolucao de Conflitos

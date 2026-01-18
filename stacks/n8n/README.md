@@ -155,7 +155,7 @@ Para adicionar mais workers, copie o bloco do worker-2 e altere:
 ## Acesso
 
 - **URL:** https://seu-dominio.com.br (via Tailscale Funnel ou proxy)
-- **Porta local:** 127.0.0.1:5678
+- **Porta local:** :5678
 
 ## Troubleshooting
 

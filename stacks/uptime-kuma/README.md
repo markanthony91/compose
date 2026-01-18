@@ -15,7 +15,7 @@ O **Uptime Kuma** e uma ferramenta de monitoramento auto-hospedada facil de usar
 
 ## Acesso e Seguranca (Tailscale)
 
-Por padrao, o Uptime Kuma escuta apenas em `127.0.0.1`. Escolha como deseja expor:
+Por padrao, o Uptime Kuma pode ser acessado via Localhost, LAN ou Tailscale. Escolha como deseja expor:
 
 - **Privado (Apenas na VPN):** `sudo tailscale serve --bg 3001`
 - **Publico (Internet):** `sudo tailscale funnel --bg 3001`

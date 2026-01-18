@@ -35,7 +35,7 @@ sudo bash setup.sh
 
 ## Diretrizes de Seguranca (Security-First)
 
-- **Acesso:** Portas expostas apenas em `127.0.0.1` (Acesso via Tailscale Funnel/Serve).
+- **Acesso:** Portas expostas em todas as interfaces (Multihome) (Acesso via LAN, Tailscale ou Funnel).
 - **Rede:** Todas as stacks usam a rede externa `llmserver`.
 - **Manutencao:** Watchtower incluso para auto-update.
 - **Portas:** Seguimos a **Regra 45-55** para resolucao de conflitos.
