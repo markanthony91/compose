@@ -1,6 +1,6 @@
 # n8n - Workflow Automation
 
-Stack completa do n8n com PostgreSQL, Redis e Workers para processamento em fila.
+Stack completa do n8n com PostgreSQL, Redis, Workers e atualizacao automatica.
 
 ## Arquitetura
 
@@ -22,6 +22,12 @@ Stack completa do n8n com PostgreSQL, Redis e Workers para processamento em fila
     │  PostgreSQL │   │    Redis    │   │   Workers   │
     │   (dados)   │   │   (filas)   │   │  (1 e 2)    │
     └─────────────┘   └─────────────┘   └─────────────┘
+                             │
+                    ┌────────▼────────┐
+                    │   Watchtower    │
+                    │ (auto-update)   │
+                    │  dom 22:00      │
+                    └─────────────────┘
 ```
 
 ## Componentes
@@ -30,9 +36,32 @@ Stack completa do n8n com PostgreSQL, Redis e Workers para processamento em fila
 |---------|--------|--------|
 | postgres | postgres:16-alpine | Banco de dados principal |
 | redis | redis:7-alpine | Gerenciamento de filas |
-| n8n | n8n:1.73.1 | Interface web + webhooks |
-| n8n-worker-1 | n8n:1.73.1 | Processamento paralelo |
-| n8n-worker-2 | n8n:1.73.1 | Processamento paralelo |
+| n8n | n8n:2.3.4 | Interface web + webhooks |
+| n8n-worker-1 | n8n:2.3.4 | Processamento paralelo |
+| n8n-worker-2 | n8n:2.3.4 | Processamento paralelo |
+| watchtower | containrrr/watchtower | Atualizacao automatica |
+
+## Recursos
+
+### Healthchecks
+Todos os containers possuem healthcheck configurado:
+- **postgres:** `pg_isready` (10s interval)
+- **redis:** `redis-cli ping` (10s interval)
+- **n8n:** `/healthz` endpoint (30s interval)
+- **workers:** `pgrep n8n worker` (30s interval)
+- **watchtower:** `--health-check` (60s interval)
+
+### Atualizacao Automatica (Watchtower)
+- **Schedule:** Todo domingo as 22:00
+- **Escopo:** Apenas containers com label `watchtower.enable=true`
+- **Cleanup:** Remove imagens antigas automaticamente
+- **Revive:** Reinicia containers parados apos atualizar
+
+### Integracao com Autoheal
+Containers com label `autoheal=true` serao reiniciados automaticamente se ficarem unhealthy:
+- n8n (main)
+- n8n-worker-1
+- n8n-worker-2
 
 ## Pre-requisitos
 
@@ -71,6 +100,7 @@ docker compose logs -f n8n
 
 | Variavel | Descricao | Exemplo |
 |----------|-----------|---------|
+| N8N_VERSION | Versao do n8n | 2.3.4 |
 | N8N_HOST | Dominio de acesso | n8n.empresa.com.br |
 | N8N_PROTOCOL | http ou https | https |
 | WEBHOOK_URL | URL para webhooks | https://n8n.empresa.com.br |
@@ -84,6 +114,10 @@ docker compose logs -f n8n
 # Ver logs
 docker compose logs -f n8n
 docker compose logs -f n8n-worker-1
+docker compose logs -f watchtower
+
+# Verificar healthchecks
+docker ps --format "table {{.Names}}\t{{.Status}}"
 
 # Reiniciar n8n (mantendo banco)
 docker compose restart n8n n8n-worker-1 n8n-worker-2
@@ -91,9 +125,8 @@ docker compose restart n8n n8n-worker-1 n8n-worker-2
 # Parar tudo
 docker compose down
 
-# Atualizar n8n (editar versao no compose primeiro)
-docker compose pull
-docker compose up -d
+# Forcar atualizacao manual (sem esperar domingo)
+docker exec n8n-watchtower /watchtower --run-once
 
 # Backup do banco
 docker exec n8n-postgres pg_dump -U n8n n8n > backup.sql
@@ -117,6 +150,7 @@ Para adicionar mais workers, copie o bloco do worker-2 e altere:
 | redis | 512 MB |
 | n8n | 2 GB |
 | workers | 1 GB cada |
+| watchtower | - |
 
 ## Acesso
 
@@ -139,13 +173,35 @@ docker compose logs redis
 docker exec n8n-redis redis-cli -a $REDIS_PASSWORD ping
 ```
 
-### Erro de permissao
+### Container unhealthy
 ```bash
-# Verificar owner do volume
-docker volume inspect n8n_data
+# Ver detalhes do healthcheck
+docker inspect --format='{{json .State.Health}}' n8n | jq
+
+# Forcar reinicio
+docker compose restart nome_servico
+```
+
+### Watchtower nao atualiza
+```bash
+# Ver logs do watchtower
+docker compose logs watchtower
+
+# Verificar labels
+docker inspect n8n | jq '.[0].Config.Labels'
+
+# Executar atualizacao manual
+docker exec n8n-watchtower /watchtower --run-once --debug
 ```
 
 ## Links
 
 - [Documentacao n8n](https://docs.n8n.io/)
+- [n8n Releases](https://github.com/n8n-io/n8n/releases)
 - [n8n Community](https://community.n8n.io/)
+- [Watchtower Docs](https://containrrr.dev/watchtower/)
+
+## Fontes
+
+- [n8n Release Notes](https://docs.n8n.io/release-notes/)
+- [n8n Docker Hub](https://hub.docker.com/r/n8nio/n8n)

@@ -3,7 +3,7 @@
 # Descricao: n8n workflow automation com PostgreSQL, Redis e Workers
 # Autor: Mark - Aiknow Systems
 # Data: 2026-01-18
-# Versao: 1.0
+# Versao: 1.1
 #
 # Requisitos:
 #   - Docker Engine 24+
@@ -19,11 +19,16 @@
 #   - Redis: Gerenciamento de filas (queue mode)
 #   - n8n: Instancia principal (Web UI + Webhooks)
 #   - n8n-worker-1/2: Workers para processamento paralelo
+#   - Watchtower: Atualizacao automatica semanal (dom 22:00)
+#
+# Healthchecks:
+#   - Todos os containers possuem healthcheck
+#   - Autoheal pode reiniciar containers unhealthy
 ################################################################################
 
 # YAML Anchors - Configuracoes reutilizaveis
 x-n8n-common: &n8n-common
-  image: docker.n8n.io/n8nio/n8n:1.73.1
+  image: docker.n8n.io/n8nio/n8n:${N8N_VERSION:-2.3.4}
   restart: unless-stopped
   networks:
     - llmserver
@@ -91,6 +96,7 @@ services:
       - "com.aiknow.project=n8n"
       - "com.aiknow.service=database"
       - "com.aiknow.maintainer=mark@aiknow.systems"
+      - "com.centurylinklabs.watchtower.enable=true"
 
   # ==========================================================================
   # Redis - Gerenciamento de Filas
@@ -122,6 +128,7 @@ services:
       - "com.aiknow.project=n8n"
       - "com.aiknow.service=cache"
       - "com.aiknow.maintainer=mark@aiknow.systems"
+      - "com.centurylinklabs.watchtower.enable=true"
 
   # ==========================================================================
   # n8n - Instancia Principal (Web UI + Webhooks)
@@ -165,6 +172,8 @@ services:
       - "com.aiknow.project=n8n"
       - "com.aiknow.service=main"
       - "com.aiknow.maintainer=mark@aiknow.systems"
+      - "com.centurylinklabs.watchtower.enable=true"
+      - "autoheal=true"
 
   # ==========================================================================
   # n8n Worker 1 - Processamento de Execucoes
@@ -185,6 +194,12 @@ services:
         condition: service_healthy
       n8n:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f 'n8n worker' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     deploy:
       resources:
         limits:
@@ -194,6 +209,8 @@ services:
       - "com.aiknow.service=worker"
       - "com.aiknow.worker-id=1"
       - "com.aiknow.maintainer=mark@aiknow.systems"
+      - "com.centurylinklabs.watchtower.enable=true"
+      - "autoheal=true"
 
   # ==========================================================================
   # n8n Worker 2 - Processamento de Execucoes
@@ -213,6 +230,12 @@ services:
         condition: service_healthy
       n8n:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f 'n8n worker' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     deploy:
       resources:
         limits:
@@ -221,6 +244,53 @@ services:
       - "com.aiknow.project=n8n"
       - "com.aiknow.service=worker"
       - "com.aiknow.worker-id=2"
+      - "com.aiknow.maintainer=mark@aiknow.systems"
+      - "com.centurylinklabs.watchtower.enable=true"
+      - "autoheal=true"
+
+  # ==========================================================================
+  # Watchtower - Atualizacao Automatica Semanal
+  # ==========================================================================
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: n8n-watchtower
+    restart: unless-stopped
+    environment:
+      TZ: ${GENERIC_TIMEZONE:-America/Sao_Paulo}
+      # Atualiza apenas containers com label watchtower.enable=true
+      WATCHTOWER_LABEL_ENABLE: "true"
+      # Schedule: Domingo as 22:00 (cron format: seg min hora dia mes dia_semana)
+      WATCHTOWER_SCHEDULE: "0 0 22 * * 0"
+      # Limpa imagens antigas apos atualizar
+      WATCHTOWER_CLEANUP: "true"
+      # Inclui containers parados
+      WATCHTOWER_INCLUDE_STOPPED: "true"
+      # Revive containers parados apos atualizacao
+      WATCHTOWER_REVIVE_STOPPED: "true"
+      # Notificacoes (descomente e configure se quiser)
+      # WATCHTOWER_NOTIFICATIONS: slack
+      # WATCHTOWER_NOTIFICATION_SLACK_HOOK_URL: ${SLACK_WEBHOOK_URL}
+      # Timeout para pull de imagens (5 min)
+      WATCHTOWER_TIMEOUT: 300s
+      # Log level
+      WATCHTOWER_DEBUG: "false"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - llmserver
+    logging:
+      <<: *default-logging
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "/watchtower", "--health-check"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    labels:
+      - "com.aiknow.project=n8n"
+      - "com.aiknow.service=watchtower"
       - "com.aiknow.maintainer=mark@aiknow.systems"
 
 # ==============================================================================
