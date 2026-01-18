@@ -113,3 +113,11 @@ Todo `README.md` dentro de `stacks/[nome]/` DEVE conter:
 - **Flexibilidade:** Os servicos devem ser acessiveis via Localhost (`127.0.0.1`), Rede Local (ex: `192.168.240.250`) e Tailscale.
 - **Configuracao:** Use a variavel `BIND_IP` no `.env` para controlar a interface de escuta. O padrao devera ser `0.0.0.0` para permitir multihome.
 - **Controle de Acesso:** O bloqueio de acessos externos (Internet Publica) deve ser feito via **Firewall (UFW)** no Host, permitindo apenas as subredes autorizadas (LAN e Tailscale).
+### 8. Stacks Existentes e Portas
+
+| Stack | Porta Host | Finalidade |
+|-------|------------|------------|
+| ai-database | 5432 / 6379 | Vetores (RAG) e Filas |
+| supabase | 8000 | Backend Full-stack |
+| uptime-kuma | 3001 | Monitoramento de Uptime |
+| n8n | 5678 | Automacao |
