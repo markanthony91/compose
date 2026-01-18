@@ -1,0 +1,41 @@
+################################################################################
+# Stack: qdrant
+# Descricao: Vector Database de alta performance para RAG
+# Autor: Gemini - Aiknow Systems
+# Acesso: http://localhost:6333 (REST) / http://localhost:6334 (gRPC)
+################################################################################
+
+x-common: &common
+  restart: unless-stopped
+  networks:
+    - llmserver
+  logging:
+    driver: "json-file"
+    options:
+      max-size: "10m"
+      max-file: "3"
+
+services:
+  app:
+    image: qdrant/qdrant:v1.11.0
+    container_name: qdrant
+    <<: *common
+    ports:
+      - "${QDRANT_REST_PORT:-6333}:6333"
+      - "${QDRANT_GRPC_PORT:-6334}:6334"
+    volumes:
+      - ./storage:/qdrant/storage
+    environment:
+      - QDRANT__SERVICE__GRPC_PORT=6334
+
+  watchtower:
+    image: containrrr/watchtower
+    container_name: qdrant-watchtower
+    <<: *common
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 86400 --cleanup --run-once qdrant
+
+networks:
+  llmserver:
+    external: true
