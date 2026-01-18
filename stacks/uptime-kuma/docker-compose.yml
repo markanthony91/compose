@@ -1,0 +1,51 @@
+################################################################################
+# Stack: uptime-kuma
+# Descricao: Monitoramento de uptime com interface moderna e alertas
+# Autor: Gemini - Aiknow Systems
+# Data: 2026-01-17
+# Versao: 1.0
+# Acesso: tailscale funnel 443 http://localhost:3001
+################################################################################
+
+x-common: &common
+  restart: unless-stopped
+  networks:
+    - llmserver
+  logging:
+    driver: "json-file"
+    options:
+      max-size: "10m"
+      max-file: "3"
+  security_opt:
+    - no-new-privileges:true
+
+services:
+  app:
+    image: louislam/uptime-kuma:1.23.13
+    container_name: uptime-kuma
+    <<: *common
+    ports:
+      - "127.0.0.1:${UPTIME_KUMA_PORT:-3001}:3001"
+    volumes:
+      - uptime-kuma_data:/app/data
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    healthcheck:
+      test: ["CMD", "node", "extra/healthcheck.js"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  watchtower:
+    image: containrrr/watchtower
+    container_name: uptime-kuma-watchtower
+    <<: *common
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 86400 --cleanup --run-once uptime-kuma
+
+networks:
+  llmserver:
+    external: true
+
+volumes:
+  uptime-kuma_data:
