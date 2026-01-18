@@ -1,0 +1,49 @@
+################################################################################
+# Stack: langgraph
+# Descricao: Motor de agentes baseados em estados e grafos (LangChain)
+# Autor: Gemini - Aiknow Systems
+################################################################################
+
+x-common: &common
+  restart: unless-stopped
+  networks:
+    - llmserver
+  logging:
+    driver: "json-file"
+    options:
+      max-size: "10m"
+      max-file: "3"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: langgraph-db
+    <<: *common
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: langgraph
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+
+  # Servidor API para o Grafo
+  # Voce deve montar sua pasta de código aqui
+  server:
+    image: langchain/langgraph-api:latest
+    container_name: langgraph-server
+    <<: *common
+    ports:
+      - "${LANGGRAPH_PORT:-8123}:8123"
+    environment:
+      - DATABASE_URL=postgres://postgres:${DB_PASSWORD}@postgres:5432/langgraph
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+    volumes:
+      - .:/app
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - postgres
+
+networks:
+  llmserver:
+    external: true
