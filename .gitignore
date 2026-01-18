@@ -1,0 +1,38 @@
+# ==============================================================================
+# .gitignore - Docker Compose Templates
+# ==============================================================================
+
+# Arquivos de ambiente com senhas reais
+.env
+*.env
+!.env.example
+
+# Dados locais
+data/
+volumes/
+backups/
+
+# Logs
+*.log
+logs/
+
+# Arquivos temporarios
+*.tmp
+*.temp
+.cache/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDEs
+.vscode/
+.idea/
+*.sublime-*
+
+# Docker
+docker-compose.override.yml
+docker-compose.local.yml

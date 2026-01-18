@@ -10,35 +10,72 @@ Este arquivo fornece contexto para o Claude Code ao trabalhar neste repositorio.
 - **Publico-alvo:** Analistas Junior de Suporte/Infraestrutura
 - **Foco:** Templates prontos para producao com boas praticas
 
+## Requisitos Obrigatorios para TODA Stack
+
+Toda stack criada neste repositorio DEVE atender aos seguintes requisitos:
+
+### 1. Network Externa `llmserver`
+```yaml
+networks:
+  llmserver:
+    external: true
+```
+- Permite comunicacao entre containers de diferentes stacks
+- Ex: n8n acessa Ollama via `http://ollama:11434`
+
+### 2. Atualizacao Automatica (Watchtower)
+- Toda stack DEVE incluir Watchtower
+- Schedule: Domingo as 22:00
+- Nao requer intervencao manual para atualizar
+
+### 3. Backup Automatico (Restic)
+- Toda stack DEVE incluir servico de backup
+- Backup incremental para destino remoto
+- Restauracao em caso de perda do servidor
+
+### 4. Versao Estavel
+- Sempre usar versao estavel mais recente
+- Pesquisar antes de definir a versao
+- Nunca usar tag `latest` (exceto watchtower)
+
+### 5. Suporte Tailscale
+- Todos os servicos devem ser acessiveis via Tailscale
+- Suporte a Tailscale Funnel (exposicao publica)
+- Suporte a `tailscale serve --bg` (proxy local)
+- Portas expostas apenas em 127.0.0.1
+
+### 6. Arquivos Obrigatorios
+- `docker-compose.yml` - Compose principal
+- `.env.example` - Variaveis de ambiente (sem senhas)
+- `README.md` - Documentacao da stack
+- `.gitignore` - Ignorar .env com senhas
+
 ## Estrutura do Projeto
 
 ```
 compose/
 ├── CLAUDE.md                    # Contexto para Claude Code
 ├── README.md                    # Documentacao principal
-├── templates/                   # Templates base reutilizaveis
-│   ├── traefik/                 # Proxy reverso
-│   ├── portainer/               # Gerenciamento Docker
-│   └── monitoring/              # Prometheus + Grafana
+├── .gitignore                   # Arquivos ignorados
 ├── stacks/                      # Stacks completas de aplicacoes
 │   ├── n8n/                     # Automacao
+│   │   ├── docker-compose.yml
+│   │   ├── .env.example
+│   │   └── README.md
 │   ├── ollama/                  # IA Local
-│   └── nextcloud/               # Cloud pessoal
-└── examples/                    # Exemplos de configuracao
-    └── .env.example
+│   └── [outras stacks]/
+└── templates/                   # Templates base (futuro)
 ```
 
 ## Padrao de Compose Files
 
-### Estrutura Obrigatoria
-
-Todo docker-compose.yml deve seguir esta estrutura:
+### Estrutura Obrigatoria Completa
 
 ```yaml
 ################################################################################
 # Stack: nome-da-stack
 # Descricao: Descricao clara do que a stack faz
-# Autor: [Nome] - [Empresa]
+# Autor: Mark - Aiknow Systems
 # Data: YYYY-MM-DD
 # Versao: X.Y
 #
@@ -46,20 +83,26 @@ Todo docker-compose.yml deve seguir esta estrutura:
 #   - Docker Engine 24+
 #   - Docker Compose v2
 #   - Network externa: llmserver
-#   - [Outros requisitos]
+#   - Tailscale instalado no host
 #
 # Portas Expostas:
-#   - XXXX: Servico principal
-#   - YYYY: Admin/API
+#   - XXXX: Servico principal (127.0.0.1 apenas)
 #
-# Healthchecks:
-#   - Todos os containers possuem healthcheck
-#   - Autoheal pode reiniciar containers unhealthy
+# Tailscale:
+#   - Funnel: tailscale funnel 443 http://localhost:XXXX
+#   - Serve: tailscale serve --bg http://localhost:XXXX
+#
+# Backup:
+#   - Volumes: lista de volumes com backup
+#   - Destino: configurar em RESTIC_REPOSITORY
+#   - Schedule: diario as 03:00
 ################################################################################
 
-# YAML Anchors - Configuracoes reutilizaveis (opcional)
+# YAML Anchors - Configuracoes reutilizaveis
 x-common: &common
   restart: unless-stopped
+  networks:
+    - llmserver
   logging: &default-logging
     driver: "json-file"
     options:
@@ -69,32 +112,39 @@ x-common: &common
     - no-new-privileges:true
 
 services:
-  nome_servico:
-    image: imagem:tag-fixa
-    container_name: stack-servico
+  # ==========================================================================
+  # Servico Principal
+  # ==========================================================================
+  app:
+    image: imagem:versao-estavel
+    container_name: stack-app
     <<: *common
     environment:
       TZ: ${GENERIC_TIMEZONE:-America/Sao_Paulo}
-    networks:
-      - llmserver
+    ports:
+      - "127.0.0.1:${APP_PORT}:8080"  # Apenas localhost para Tailscale
+    volumes:
+      - app_data:/data
     healthcheck:
-      test: ["CMD", "comando", "de", "teste"]
+      test: ["CMD-SHELL", "wget --spider -q http://localhost:8080/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 30s
+      start_period: 60s
     deploy:
       resources:
         limits:
-          memory: 1G
+          memory: 2G
     labels:
-      - "com.aiknow.project=nome-stack"
-      - "com.aiknow.service=nome-servico"
+      - "com.aiknow.project=stack"
+      - "com.aiknow.service=app"
       - "com.aiknow.maintainer=mark@aiknow.systems"
       - "com.centurylinklabs.watchtower.enable=true"
       - "autoheal=true"
 
-  # Watchtower - Atualizacao Automatica (obrigatorio em toda stack)
+  # ==========================================================================
+  # Watchtower - Atualizacao Automatica (OBRIGATORIO)
+  # ==========================================================================
   watchtower:
     image: containrrr/watchtower:latest
     container_name: stack-watchtower
@@ -122,29 +172,67 @@ services:
       retries: 3
       start_period: 10s
     labels:
-      - "com.aiknow.project=nome-stack"
+      - "com.aiknow.project=stack"
       - "com.aiknow.service=watchtower"
+
+  # ==========================================================================
+  # Backup - Restic (OBRIGATORIO)
+  # ==========================================================================
+  backup:
+    image: mazzolino/restic:latest
+    container_name: stack-backup
+    restart: unless-stopped
+    environment:
+      TZ: ${GENERIC_TIMEZONE:-America/Sao_Paulo}
+      # Destino do backup (configurar no .env)
+      RESTIC_REPOSITORY: ${RESTIC_REPOSITORY}
+      RESTIC_PASSWORD: ${RESTIC_PASSWORD}
+      # Credenciais S3/B2/etc (se aplicavel)
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      # Schedule: diario as 03:00
+      BACKUP_CRON: "0 3 * * *"
+      # Retencao
+      RESTIC_FORGET_ARGS: "--keep-daily 7 --keep-weekly 4 --keep-monthly 6"
+      # Pre-backup hooks (opcional - para dump de banco)
+      PRE_COMMANDS: |-
+        echo "Iniciando backup..."
+      POST_COMMANDS: |-
+        echo "Backup concluido!"
+    volumes:
+      # Volumes para backup (adicionar todos os volumes da stack)
+      - app_data:/data/app_data:ro
+      # Socket Docker para comandos pre/post
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - llmserver
+    logging:
+      <<: *default-logging
+    security_opt:
+      - no-new-privileges:true
+    labels:
+      - "com.aiknow.project=stack"
+      - "com.aiknow.service=backup"
 
 networks:
   llmserver:
     external: true
 
 volumes:
-  dados:
-    name: stack_dados
+  app_data:
+    name: stack_app_data
 ```
 
-### Convencoes de Nomenclatura
+## Convencoes de Nomenclatura
 
 | Elemento | Padrao | Exemplo |
 |----------|--------|---------|
-| Arquivo | `docker-compose.yml` | `docker-compose.yml` |
 | Container | `stack-servico` | `n8n-postgres` |
 | Network | `llmserver` (externa) | `llmserver` |
-| Volume | `stack_dados` | `n8n_postgres_data` |
-| Variavel | `STACK_VARIAVEL` | `N8N_PORT` |
+| Volume | `stack_servico_data` | `n8n_postgres_data` |
+| Variavel | `SERVICO_CONFIG` | `N8N_PORT` |
 
-### Labels Obrigatorias
+## Labels Obrigatorias
 
 ```yaml
 labels:
@@ -158,134 +246,91 @@ labels:
   - "autoheal=true"
 ```
 
-### YAML Anchors (Padrao)
+## Tailscale - Configuracao
 
-Use anchors para evitar duplicacao:
-
-```yaml
-# Definir anchor
-x-common: &common
-  restart: unless-stopped
-  networks:
-    - llmserver
-  logging: &default-logging
-    driver: "json-file"
-    options:
-      max-size: "10m"
-      max-file: "3"
-  security_opt:
-    - no-new-privileges:true
-
-# Usar anchor
-services:
-  app:
-    <<: *common
-    image: app:1.0
-```
-
-## Boas Praticas
-
-### 1. Sempre Usar
-
-- **Versao de imagem fixa** - Nunca usar `latest` em producao (exceto watchtower)
-- **restart: unless-stopped** - Garantir resiliencia
-- **healthcheck** - Monitorar saude do container
-- **logging** - Configurar rotacao de logs (10m, 3 arquivos)
-- **network llmserver** - Rede externa compartilhada
-- **volumes nomeados** - Persistencia de dados
-- **security_opt: no-new-privileges** - Seguranca
-- **deploy.resources.limits** - Limites de memoria
-- **Watchtower** - Atualizacao automatica semanal
-- **Labels** - Identificacao e integracao com Autoheal
-
-### 2. Evitar
-
-- Portas hardcoded (usar variaveis)
-- Senhas em texto plano (usar secrets ou .env)
-- Bind mounts para dados criticos
-- Privileged mode (exceto quando necessario)
-- Host network mode (preferir bridge)
-- Tag `latest` (exceto watchtower)
-
-### 3. Seguranca
-
-```yaml
-services:
-  app:
-    security_opt:
-      - no-new-privileges:true
-    read_only: true  # quando possivel
-    tmpfs:
-      - /tmp
-    user: "1000:1000"  # quando possivel
-```
-
-## Network Padrao
-
-Todas as stacks usam a network externa `llmserver`:
-
-```yaml
-networks:
-  llmserver:
-    external: true
-```
-
-### Pre-requisito
+### Exposicao via Funnel (Publico)
 
 ```bash
-docker network create llmserver
+# Expor servico publicamente
+tailscale funnel 443 http://localhost:${APP_PORT}
+
+# Verificar status
+tailscale funnel status
 ```
 
-### Beneficios
-
-- Containers de diferentes stacks se comunicam
-- Ex: n8n acessa Ollama via `http://ollama:11434`
-- Isolamento do host mantido
-
-## Variaveis de Ambiente
-
-### Arquivo .env Padrao
+### Exposicao via Serve (Rede Tailscale)
 
 ```bash
-# .env
-################################################################################
-# Stack: nome-stack
-# Descricao: Variaveis de ambiente para a stack
-################################################################################
+# Expor apenas na rede Tailscale
+tailscale serve --bg http://localhost:${APP_PORT}
 
-# Geral
-COMPOSE_PROJECT_NAME=nome_stack
-GENERIC_TIMEZONE=America/Sao_Paulo
+# Com HTTPS
+tailscale serve --bg --https=443 http://localhost:${APP_PORT}
 
-# Versao da aplicacao principal
-APP_VERSION=1.0.0
-
-# Rede
-DOMAIN=exemplo.com.br
-
-# Portas (Range: 15000-35000)
-APP_PORT=25000
-
-# Credenciais (NUNCA commitar valores reais)
-DB_PASSWORD=changeme
-ADMIN_PASSWORD=changeme
-
-# Recursos
-MEMORY_LIMIT=2g
+# Verificar status
+tailscale serve status
 ```
 
 ### Padrao de Portas
 
-| Range | Uso |
-|-------|-----|
-| 15000-20000 | Aplicacoes web |
-| 20001-25000 | APIs e backends |
-| 25001-30000 | Bancos de dados |
-| 30001-35000 | Monitoramento |
+Todas as portas DEVEM ser expostas apenas em `127.0.0.1`:
 
-## Healthchecks
+```yaml
+ports:
+  - "127.0.0.1:${APP_PORT}:8080"  # CORRETO
+  # - "${APP_PORT}:8080"          # ERRADO - expoe para todos
+```
 
-### Padrao por Tipo de Servico
+## Backup - Configuracao
+
+### Destinos Suportados (Restic)
+
+| Destino | RESTIC_REPOSITORY |
+|---------|-------------------|
+| Local | `/backups` |
+| S3 | `s3:s3.amazonaws.com/bucket` |
+| B2 | `b2:bucket:path` |
+| SFTP | `sftp:user@host:/path` |
+| Rclone | `rclone:remote:path` |
+
+### Variaveis de Ambiente (.env)
+
+```bash
+# Backup - Restic
+RESTIC_REPOSITORY=s3:s3.amazonaws.com/meu-bucket/backups
+RESTIC_PASSWORD=senha_forte_para_criptografia
+
+# Credenciais S3 (se usar S3/B2)
+AWS_ACCESS_KEY_ID=sua_access_key
+AWS_SECRET_ACCESS_KEY=sua_secret_key
+```
+
+### Backup de Banco de Dados
+
+Para bancos de dados, usar PRE_COMMANDS para dump:
+
+```yaml
+backup:
+  environment:
+    PRE_COMMANDS: |-
+      # Dump PostgreSQL antes do backup
+      docker exec stack-postgres pg_dump -U user db > /data/postgres_dump.sql
+```
+
+### Restauracao
+
+```bash
+# Listar snapshots
+docker exec stack-backup restic snapshots
+
+# Restaurar ultimo snapshot
+docker exec stack-backup restic restore latest --target /restore
+
+# Restaurar snapshot especifico
+docker exec stack-backup restic restore abc123 --target /restore
+```
+
+## Healthchecks - Por Tipo de Servico
 
 ```yaml
 # Web/API
@@ -319,53 +364,6 @@ healthcheck:
   timeout: 10s
   retries: 3
   start_period: 30s
-
-# Watchtower
-healthcheck:
-  test: ["CMD", "/watchtower", "--health-check"]
-  interval: 60s
-  timeout: 10s
-  retries: 3
-  start_period: 10s
-```
-
-## Logging
-
-```yaml
-logging: &default-logging
-  driver: "json-file"
-  options:
-    max-size: "10m"
-    max-file: "3"
-```
-
-## Watchtower (Obrigatorio)
-
-Toda stack deve incluir Watchtower para atualizacao automatica:
-
-```yaml
-watchtower:
-  image: containrrr/watchtower:latest
-  container_name: stack-watchtower
-  restart: unless-stopped
-  environment:
-    TZ: ${GENERIC_TIMEZONE:-America/Sao_Paulo}
-    WATCHTOWER_LABEL_ENABLE: "true"
-    WATCHTOWER_SCHEDULE: "0 0 22 * * 0"  # Domingo 22:00
-    WATCHTOWER_CLEANUP: "true"
-    WATCHTOWER_INCLUDE_STOPPED: "true"
-    WATCHTOWER_REVIVE_STOPPED: "true"
-    WATCHTOWER_TIMEOUT: 300s
-  volumes:
-    - /var/run/docker.sock:/var/run/docker.sock:ro
-  networks:
-    - llmserver
-```
-
-### Forcar Atualizacao Manual
-
-```bash
-docker exec stack-watchtower /watchtower --run-once
 ```
 
 ## Limites de Recursos
@@ -375,121 +373,133 @@ deploy:
   resources:
     limits:
       memory: 1G
-      # cpus: "1.0"  # opcional
 ```
 
-### Recomendacoes
-
-| Tipo | Memoria |
-|------|---------|
+| Tipo | Memoria Recomendada |
+|------|---------------------|
 | Banco de dados | 1G |
 | Cache (Redis) | 512M |
 | Aplicacao web | 2G |
 | Workers | 1G |
+| IA/LLM | 8G+ |
 
-## Comandos Uteis
-
-```bash
-# Subir stack
-docker compose up -d
-
-# Ver logs
-docker compose logs -f [servico]
-
-# Verificar healthchecks
-docker ps --format "table {{.Names}}\t{{.Status}}"
-
-# Parar stack
-docker compose down
-
-# Remover tudo (incluindo volumes)
-docker compose down -v
-
-# Atualizar imagens manualmente
-docker compose pull && docker compose up -d
-
-# Forcar atualizacao via Watchtower
-docker exec stack-watchtower /watchtower --run-once
-
-# Verificar status detalhado
-docker compose ps
-```
-
-## Fluxo de Trabalho Git
-
-### Commits
+## Arquivo .env.example (Template)
 
 ```bash
-# Padrao de commits (Conventional Commits)
-feat: nova stack para n8n
-fix: correcao de porta no traefik
-docs: atualizacao do README
-refactor: reorganizacao de networks
+################################################################################
+# Stack: nome-stack
+# Descricao: Variaveis de ambiente
+#
+# INSTRUCOES:
+#   1. Copie: cp .env.example .env
+#   2. Edite com seus valores
+#   3. NUNCA commite .env com senhas reais
+################################################################################
+
+# ==============================================================================
+# GERAL
+# ==============================================================================
+COMPOSE_PROJECT_NAME=nome_stack
+GENERIC_TIMEZONE=America/Sao_Paulo
+
+# Versao da aplicacao (consultar release notes)
+APP_VERSION=1.0.0
+
+# ==============================================================================
+# REDE / ACESSO
+# ==============================================================================
+# Porta local (Tailscale fara o proxy)
+APP_PORT=25000
+
+# Dominio Tailscale (para webhooks)
+# Obter com: tailscale status --json | jq -r '.Self.DNSName'
+TAILSCALE_DOMAIN=seu-servidor.tailnet-xxx.ts.net
+
+# ==============================================================================
+# CREDENCIAIS
+# ==============================================================================
+# Gerar com: openssl rand -hex 32
+SECRET_KEY=changeme
+
+# Banco de dados
+DB_PASSWORD=changeme
+
+# ==============================================================================
+# BACKUP - RESTIC
+# ==============================================================================
+# Destino: s3:bucket, b2:bucket, sftp:user@host:/path, /local/path
+RESTIC_REPOSITORY=s3:s3.amazonaws.com/seu-bucket/backups
+
+# Senha para criptografia do backup (gerar com: openssl rand -base64 32)
+RESTIC_PASSWORD=changeme
+
+# Credenciais S3/B2 (se aplicavel)
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+
+# ==============================================================================
+# PRE-REQUISITOS
+# ==============================================================================
+# Antes de subir a stack:
+#
+# 1. Criar network:
+#    docker network create llmserver
+#
+# 2. Inicializar repositorio Restic:
+#    docker run --rm -e RESTIC_REPOSITORY=... -e RESTIC_PASSWORD=... \
+#      mazzolino/restic restic init
+#
+# 3. Configurar Tailscale:
+#    tailscale up
+#    tailscale funnel 443 http://localhost:${APP_PORT}
+################################################################################
 ```
 
-### Branches
+## Fluxo de Trabalho Obrigatorio
 
-```bash
-main    # Producao - stacks testadas e aprovadas
-```
+### Ao Criar Nova Stack
 
-## Fluxo de Trabalho Obrigatorio para Claude
-
-### 1. Ao Criar Nova Stack
-
-```bash
-# 1. Criar diretorio da stack
-# 2. Criar docker-compose.yml com:
-#    - Cabecalho completo
-#    - YAML Anchors para reducao de duplicacao
-#    - Todos os healthchecks
-#    - Watchtower incluso
-#    - Network llmserver (externa)
-#    - Labels completas
-# 3. Criar .env.example (sem valores sensiveis)
-# 4. Criar README.md da stack
-# 5. Validar sintaxe: docker compose config
-# 6. Atualizar README.md principal
-# 7. Atualizar CLAUDE.md (estatisticas e stacks)
-# 8. Commit com mensagem descritiva
-# 9. Push para repositorio
-```
-
-### 2. Ao Editar Stack Existente
-
-```bash
-# 1. Ler docker-compose.yml completo
-# 2. Atualizar versao e data no cabecalho
-# 3. Validar sintaxe: docker compose config
-# 4. Atualizar .env.example se necessario
-# 5. Atualizar README.md se necessario
-# 6. Commit e push
-```
+1. **Pesquisar versao estavel** da aplicacao
+2. **Criar diretorio** `stacks/nome-stack/`
+3. **Criar docker-compose.yml** com:
+   - Cabecalho completo
+   - Servico principal com versao estavel
+   - Watchtower (obrigatorio)
+   - Backup Restic (obrigatorio)
+   - Network llmserver (externa)
+   - Healthchecks em todos os containers
+   - Labels completas
+   - Portas em 127.0.0.1 (para Tailscale)
+4. **Criar .env.example** com todas as variaveis
+5. **Criar README.md** com:
+   - Descricao e arquitetura
+   - Pre-requisitos
+   - Instrucoes de instalacao
+   - Configuracao Tailscale
+   - Comandos de backup/restore
+6. **Validar sintaxe**: `docker compose config`
+7. **Atualizar README.md principal**
+8. **Atualizar CLAUDE.md** (estatisticas)
+9. **Commit e push**
 
 ## Checklist de Stack
 
-Antes de finalizar qualquer stack:
-
+- [ ] Versao estavel pesquisada e definida
 - [ ] Cabecalho completo com metadados
-- [ ] YAML Anchors para configuracoes comuns
-- [ ] Versao de imagem fixa (nao usar latest)
-- [ ] restart: unless-stopped
+- [ ] Network llmserver (external: true)
+- [ ] Portas em 127.0.0.1 apenas
+- [ ] Watchtower incluso
+- [ ] Backup Restic incluso
 - [ ] Healthcheck em TODOS os containers
-- [ ] Logging configurado (10m, 3 arquivos)
-- [ ] Network llmserver (externa)
-- [ ] Volumes nomeados
+- [ ] Labels Aiknow + Watchtower + Autoheal
+- [ ] Logging configurado
+- [ ] Limites de memoria definidos
 - [ ] security_opt: no-new-privileges
-- [ ] deploy.resources.limits (memoria)
-- [ ] Labels Aiknow
-- [ ] Labels Watchtower e Autoheal
-- [ ] Watchtower incluso na stack
-- [ ] .env.example criado
-- [ ] README.md da stack criado
-- [ ] Sintaxe validada (`docker compose config`)
-- [ ] README.md principal atualizado
+- [ ] .env.example completo
+- [ ] README.md com Tailscale
+- [ ] Sintaxe validada
 - [ ] CLAUDE.md atualizado
-- [ ] Commit realizado
-- [ ] Push para repositorio
+- [ ] Commit e push
 
 ## Stacks Existentes
 
@@ -498,49 +508,39 @@ Antes de finalizar qualquer stack:
 **Descricao:** Workflow automation com PostgreSQL, Redis e Workers.
 
 **Componentes:**
-- PostgreSQL 16 (banco de dados)
-- Redis 7 (gerenciamento de filas)
-- n8n 2.3.4 (interface principal)
-- 2 Workers (processamento paralelo)
-- Watchtower (atualizacao automatica)
+- PostgreSQL 16, Redis 7, n8n 2.3.4
+- 2 Workers, Watchtower
+- (Backup Restic a adicionar)
 
-**Recursos:**
-- YAML Anchors para reduzir duplicacao
-- Queue mode com Redis
-- Healthchecks em todos os servicos
-- Limites de memoria configurados
-- Labels Aiknow + Watchtower + Autoheal
-- Atualizacao automatica domingo 22:00
-
-**Uso:**
+**Tailscale:**
 ```bash
-cd stacks/n8n
-cp .env.example .env
-docker compose up -d
+tailscale funnel 443 http://localhost:5678
 ```
 
-## Estatisticas do Projeto
+## Estatisticas
 
 | Metrica | Valor |
 |---------|-------|
 | Stacks | 1 |
-| Templates | 0 |
 | Inicio | 2026-01-18 |
 | Ultima atualizacao | 2026-01-18 |
 
 ## Dicas para Claude
 
-1. **Ler antes de editar** - Sempre ler o arquivo completo
-2. **Manter padrao** - Seguir estrutura das stacks existentes
-3. **Didatica** - Lembrar que o publico sao analistas junior
-4. **Validar sintaxe** - `docker compose config` antes de commit
-5. **Documentar** - README.md sempre atualizado
-6. **Seguranca** - Nunca commitar senhas ou tokens reais
-7. **Network** - Sempre usar llmserver (externa)
-8. **Versoes fixas** - Nunca usar tag `latest` (exceto watchtower)
-9. **Healthchecks** - Obrigatorio em TODOS os containers
-10. **Watchtower** - Obrigatorio em TODA stack
-11. **Labels** - Aiknow + Watchtower + Autoheal
-12. **Limites** - Sempre definir deploy.resources.limits
-13. **YAML Anchors** - Usar para evitar duplicacao
-14. **Minimo necessario** - Nao adicionar servicos alem do solicitado
+1. **Pesquisar versao** - Sempre buscar versao estavel antes de criar stack
+2. **Network llmserver** - OBRIGATORIO em toda stack
+3. **Watchtower** - OBRIGATORIO em toda stack
+4. **Backup Restic** - OBRIGATORIO em toda stack
+5. **Tailscale** - Portas em 127.0.0.1, documentar Funnel/Serve
+6. **Healthchecks** - TODOS os containers
+7. **.env.example** - OBRIGATORIO, sem senhas reais
+8. **.gitignore** - Verificar se existe no projeto
+9. **Validar sintaxe** - `docker compose config` antes de commit
+10. **README completo** - Incluir Tailscale e backup
+
+## Referencias
+
+- [Restic Documentation](https://restic.readthedocs.io/)
+- [Watchtower Documentation](https://containrrr.dev/watchtower/)
+- [Tailscale Funnel](https://tailscale.com/kb/1223/funnel)
+- [Tailscale Serve](https://tailscale.com/kb/1242/tailscale-serve)
