@@ -1,0 +1,41 @@
+################################################################################
+# Stack: autogen-studio
+# Descricao: Interface visual para prototipagem de sistemas multi-agentes (Microsoft)
+# Autor: Gemini - Aiknow Systems
+################################################################################
+
+x-common: &common
+  restart: unless-stopped
+  networks:
+    - llmserver
+  logging:
+    driver: "json-file"
+    options:
+      max-size: "10m"
+      max-file: "3"
+
+services:
+  app:
+    image: microsoft/autogenstudio:latest
+    container_name: autogen-studio
+    <<: *common
+    ports:
+      - "${AUTOGEN_PORT:-8081}:8081"
+    volumes:
+      - ./data:/home/autogen/autogenstudio
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  watchtower:
+    image: containrrr/watchtower
+    container_name: autogen-watchtower
+    <<: *common
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 86400 --cleanup --run-once autogen-studio
+
+networks:
+  llmserver:
+    external: true
