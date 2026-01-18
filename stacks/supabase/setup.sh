@@ -24,7 +24,7 @@ generate_secrets() {
 }
 
 configure_env() {
-    log_info "Configurando arquivo .env para Supabase..."
+    log_info "Configurando Stack: supabase"
     
     # Porta do Dashboard Studio
     read -p "Porta do Dashboard Supabase [8000]: " STUDIO_PORT

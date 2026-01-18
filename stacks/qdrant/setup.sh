@@ -11,6 +11,7 @@ configure_env() {
 }
 
 main() {
+    log_info "Iniciando Setup da Stack: qdrant"
     configure_env
     docker compose up -d
 }

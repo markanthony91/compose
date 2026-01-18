@@ -22,6 +22,7 @@ configure_env() {
 }
 
 main() {
+    log_info "Iniciando Setup da Stack: ai-database"
     configure_env
     docker compose up -d
 }

@@ -9,7 +9,7 @@ readonly NC='[0m'
 log_info() { echo -e "${GREEN}[INFO]${NC} $1"; }
 
 main() {
-    log_info "Configurando Open WebUI..."
+    log_info "Configurando Stack: open-webui"
     
     if [ ! -f .env ]; then
         cp .env.example .env

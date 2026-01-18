@@ -9,7 +9,7 @@ readonly NC='[0m'
 log_info() { echo -e "${GREEN}[INFO]${NC} $1"; }
 
 main() {
-    log_info "Configurando AutoGen Studio..."
+    log_info "Configurando Stack: autogen-studio"
     
     if [ ! -f .env ]; then
         echo "Qual porta deseja usar? [8081]"

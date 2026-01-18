@@ -24,6 +24,7 @@ configure_env() {
 }
 
 main() {
+    log_info "Iniciando Setup da Stack: uptime-kuma"
     check_requirements
     configure_env "${1:-3001}"
     docker compose up -d

@@ -6,6 +6,7 @@ readonly GREEN='[0;32m'
 readonly NC='[0m'
 
 main() {
+    log_info "Iniciando Setup da Stack: dify"
     echo -e "${GREEN}[INFO]${NC} Configurando Dify..."
     
     if [ ! -f .env ]; then

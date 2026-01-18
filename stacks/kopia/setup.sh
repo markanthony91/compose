@@ -48,6 +48,7 @@ EOF
 }
 
 main() {
+    log_info "Iniciando Setup da Stack: kopia"
     check_requirements
     configure_env
     docker compose up -d
