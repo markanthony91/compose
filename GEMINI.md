@@ -10,6 +10,7 @@
 | open-webui | 3000 | Interface IA + RAG |
 | uptime-kuma | 3001 | Monitoramento de Uptime |
 | n8n | 5678 | Automacao |
+| beszel | 8090 | Monitoramento de Recursos |
 
 ### 9. Testes Unitarios de Setup
 Para garantir a confiabilidade das stacks:
