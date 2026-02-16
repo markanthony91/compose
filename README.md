@@ -1,24 +1,42 @@
-# Docker Compose Templates
+# 🐳 AIKnow - Docker Stacks Hub
 
-Repositorio de templates docker-compose.yml padronizados da **Aiknow Systems**.
+Este repositório centraliza a orquestração de serviços de infraestrutura, IA e automação da AIKnow. Cada diretório em `stacks/` representa um serviço isolado e configurado para o ambiente Fedora/Docker.
 
-## Stacks Disponiveis e Cobertura de Testes
+## 🛠️ Stacks Gerenciadas
 
-| Stack | Descricao | Testes Unitarios | Status |
-|-------|-----------|------------------|--------|
-| [ai-database](stacks/ai-database/) | Postgres (pgvector) + Redis | 1 | ✅ |
-| [supabase](stacks/supabase/) | Backend completo (Auth/REST) | 1 | ✅ |
-| [qdrant](stacks/qdrant/) | Vector DB (RAG) | 1 | ✅ |
-| [open-webui](stacks/open-webui/) | Interface IA + RAG | 1 | ✅ |
-| [dify](stacks/dify/) | Orquestracao de Agentes | 1 | ✅ |
-| [ragflow](stacks/ragflow/) | Deep Doc Parsing | 1 | ✅ |
-| [autogen-studio](stacks/autogen-studio/) | Multi-Agentes | 1 | ✅ |
-| [langgraph](stacks/langgraph/) | Motores de Estado | 1 | ✅ |
-| [kopia](stacks/kopia/) | Servidor de Backup | 1 | ✅ |
-| [uptime-kuma](stacks/uptime-kuma/) | Monitoramento | 1 | ✅ |
-| [n8n](stacks/n8n/) | Automacao | 0 | 🚧 |
+| Serviço | Descrição | Status |
+| :--- | :--- | :--- |
+| **n8n** | Automação de workflows baseada em nós. | 🟢 Ativo |
+| **Supabase** | Backend as a Service (Database, Auth, Storage). | 🟢 Ativo |
+| **Qdrant** | Banco de dados vetorial para aplicações de IA. | 🟢 Ativo |
+| **RAGFlow** | Motor de RAG para compreensão profunda de documentos. | 🔵 Configurado |
+| **Dify** | Plataforma de desenvolvimento de aplicações LLM. | 🔵 Configurado |
+| **Open-WebUI** | Interface amigável para interação com LLMs locais. | 🟢 Ativo |
+| **LangGraph** | Orquestração de agentes cíclicos e complexos. | 🟡 Dev |
+| **AutoGen Studio** | Interface para agentes multi-agentes da Microsoft. | 🟡 Dev |
+| **Beszel** | Monitoramento leve de recursos do servidor. | 🟢 Ativo |
+| **Kopia** | Ferramenta de backup incremental e criptografado. | 🟢 Ativo |
+| **Uptime Kuma** | Monitoramento de disponibilidade de serviços. | 🟢 Ativo |
 
-## Diretrizes de Seguranca
+## 🚀 Como Utilizar
 
-- **Multihome:** Suporte a LAN, Tailscale e Localhost.
-- **Testes:** Todo `setup.sh` deve ter um teste `.bats` correspondente.
+Cada stack possui seu próprio `docker-compose.yml` e, em muitos casos, um script `setup.sh` para facilitar a inicialização.
+
+### Exemplo de Inicialização:
+1. Entre na pasta da stack desejada:
+   ```bash
+   cd stacks/qdrant
+   ```
+2. Execute o setup ou suba o compose:
+   ```bash
+   docker-compose up -d
+   ```
+
+## 📏 Regras e Padrões
+
+1. **Persistência:** Todos os dados persistentes devem ser mapeados em volumes locais ou pastas nomeadas para garantir a segurança dos dados.
+2. **Rede:** Os serviços utilizam preferencialmente a rede `fedora-net` para comunicação inter-container.
+3. **Segurança:** Variáveis sensíveis devem ser mantidas em arquivos `.env` (não versionados no Bitbucket quando contiverem segredos reais).
+
+---
+*Ecossistema de Infraestrutura Marcelo's Systems & AIKnow - 2026*
