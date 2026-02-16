@@ -2,40 +2,46 @@
 
 Este repositório centraliza a orquestração de serviços de infraestrutura, IA e automação da AIKnow.
 
-## 🛠️ Stacks Gerenciadas
+## 📁 Detalhamento das Stacks
 
-| Serviço | Descrição | Status | Configuração |
-| :--- | :--- | :--- | :--- |
-| **n8n** | Automação de workflows. | 🟢 Ativo | `.env.example` |
-| **Supabase** | Backend as a Service. | 🟢 Ativo | `.env.example` |
-| **Qdrant** | Banco de dados vetorial. | 🟢 Ativo | `setup.sh` + `.env` |
-| **RAGFlow** | Motor de RAG. | 🔵 Configurado | `.env.example` |
-| **Dify** | Plataforma LLM. | 🔵 Configurado | `setup.sh` (Auto-gen) |
-| **Open-WebUI** | Interface para LLMs. | 🟢 Ativo | `.env.example` |
+Abaixo, a descrição técnica do que você encontrará em cada pasta dentro de `stacks/`:
+
+### 🤖 Inteligência Artificial & Agentes
+- **`dify/`**: Plataforma completa para desenvolvimento de aplicações LLM. Inclui orquestração de prompts e fluxos de IA.
+- **`ragflow/`**: Motor especializado em RAG (Retrieval-Augmented Generation), focado em extração de conhecimento de documentos complexos.
+- **`open-webui/`**: Interface de chat avançada para interagir com modelos locais (Ollama) e APIs externas.
+- **`langgraph/`**: Infraestrutura para execução de agentes de IA com lógica de grafos (cíclicos e acíclicos).
+- **`autogen-studio/`**: Ambiente visual para prototipagem de sistemas multi-agentes baseados no framework AutoGen.
+
+### ⚙️ Automação & Backend
+- **`n8n/`**: Motor de automação de workflows "low-code". Contém arquivos de teste (`goss.yaml`) para validar a saúde do serviço.
+- **`supabase/`**: Backend-as-a-Service open-source. Inclui Postgres, autenticação e APIs REST automáticas.
+- **`ai-database/`**: Configurações de banco de dados otimizadas para armazenamento de vetores e metadados de IA.
+- **`qdrant/`**: Banco de dados vetorial de alta performance, essencial para buscas semânticas e memória de longo prazo para IAs.
+
+### 🛡️ Monitoramento & Infraestrutura
+- **`uptime-kuma/`**: Painel de monitoramento de status para sites e APIs com notificações em tempo real.
+- **`beszel/`**: Agente de monitoramento leve para visualizar recursos de hardware (CPU, RAM, Disco) do host Fedora.
+- **`kopia/`**: Gerenciador de backups criptografados e incrementais para proteger os volumes do Docker.
 
 ## 🚀 Como Utilizar
 
 ### 1. Configuração de Ambiente
-A maioria das stacks utiliza arquivos `.env` para gerenciar portas e credenciais. 
-- Algumas stacks possuem um script `setup.sh` que gera o `.env` automaticamente.
-- Para configuração manual, copie o arquivo de exemplo:
-  ```bash
-  cp .env.example .env
-  ```
+Cada stack possui um arquivo `.env.example`. Antes de iniciar:
+```bash
+cd stacks/nome-da-stack
+cp .env.example .env
+```
+*Alguns serviços como **Dify** e **Qdrant** possuem um `setup.sh` que faz isso automaticamente.*
 
 ### 2. Inicialização
 ```bash
-cd stacks/nome-da-stack
-./setup.sh # Se disponível
-# OU
 docker-compose up -d
 ```
 
 ## 📏 Regras e Padrões
-
-1. **Persistência:** Volumes locais são usados para garantir que os dados sobrevivam a reinicializações.
-2. **Segredos:** NUNCA commite arquivos `.env` reais com senhas de produção. Use sempre o `.env.example`.
-3. **Rede:** Preferência pela rede externa `fedora-net`.
+1. **Persistência:** Dados críticos estão mapeados em pastas locais para facilitar backups via Kopia.
+2. **Segurança:** O Bitbucket contém apenas exemplos. Senhas reais ficam apenas no ambiente local.
 
 ---
 *Ecossistema de Infraestrutura Marcelo's Systems & AIKnow - 2026*
