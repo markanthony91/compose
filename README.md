@@ -1,42 +1,41 @@
 # 🐳 AIKnow - Docker Stacks Hub
 
-Este repositório centraliza a orquestração de serviços de infraestrutura, IA e automação da AIKnow. Cada diretório em `stacks/` representa um serviço isolado e configurado para o ambiente Fedora/Docker.
+Este repositório centraliza a orquestração de serviços de infraestrutura, IA e automação da AIKnow.
 
 ## 🛠️ Stacks Gerenciadas
 
-| Serviço | Descrição | Status |
-| :--- | :--- | :--- |
-| **n8n** | Automação de workflows baseada em nós. | 🟢 Ativo |
-| **Supabase** | Backend as a Service (Database, Auth, Storage). | 🟢 Ativo |
-| **Qdrant** | Banco de dados vetorial para aplicações de IA. | 🟢 Ativo |
-| **RAGFlow** | Motor de RAG para compreensão profunda de documentos. | 🔵 Configurado |
-| **Dify** | Plataforma de desenvolvimento de aplicações LLM. | 🔵 Configurado |
-| **Open-WebUI** | Interface amigável para interação com LLMs locais. | 🟢 Ativo |
-| **LangGraph** | Orquestração de agentes cíclicos e complexos. | 🟡 Dev |
-| **AutoGen Studio** | Interface para agentes multi-agentes da Microsoft. | 🟡 Dev |
-| **Beszel** | Monitoramento leve de recursos do servidor. | 🟢 Ativo |
-| **Kopia** | Ferramenta de backup incremental e criptografado. | 🟢 Ativo |
-| **Uptime Kuma** | Monitoramento de disponibilidade de serviços. | 🟢 Ativo |
+| Serviço | Descrição | Status | Configuração |
+| :--- | :--- | :--- | :--- |
+| **n8n** | Automação de workflows. | 🟢 Ativo | `.env.example` |
+| **Supabase** | Backend as a Service. | 🟢 Ativo | `.env.example` |
+| **Qdrant** | Banco de dados vetorial. | 🟢 Ativo | `setup.sh` + `.env` |
+| **RAGFlow** | Motor de RAG. | 🔵 Configurado | `.env.example` |
+| **Dify** | Plataforma LLM. | 🔵 Configurado | `setup.sh` (Auto-gen) |
+| **Open-WebUI** | Interface para LLMs. | 🟢 Ativo | `.env.example` |
 
 ## 🚀 Como Utilizar
 
-Cada stack possui seu próprio `docker-compose.yml` e, em muitos casos, um script `setup.sh` para facilitar a inicialização.
+### 1. Configuração de Ambiente
+A maioria das stacks utiliza arquivos `.env` para gerenciar portas e credenciais. 
+- Algumas stacks possuem um script `setup.sh` que gera o `.env` automaticamente.
+- Para configuração manual, copie o arquivo de exemplo:
+  ```bash
+  cp .env.example .env
+  ```
 
-### Exemplo de Inicialização:
-1. Entre na pasta da stack desejada:
-   ```bash
-   cd stacks/qdrant
-   ```
-2. Execute o setup ou suba o compose:
-   ```bash
-   docker-compose up -d
-   ```
+### 2. Inicialização
+```bash
+cd stacks/nome-da-stack
+./setup.sh # Se disponível
+# OU
+docker-compose up -d
+```
 
 ## 📏 Regras e Padrões
 
-1. **Persistência:** Todos os dados persistentes devem ser mapeados em volumes locais ou pastas nomeadas para garantir a segurança dos dados.
-2. **Rede:** Os serviços utilizam preferencialmente a rede `fedora-net` para comunicação inter-container.
-3. **Segurança:** Variáveis sensíveis devem ser mantidas em arquivos `.env` (não versionados no Bitbucket quando contiverem segredos reais).
+1. **Persistência:** Volumes locais são usados para garantir que os dados sobrevivam a reinicializações.
+2. **Segredos:** NUNCA commite arquivos `.env` reais com senhas de produção. Use sempre o `.env.example`.
+3. **Rede:** Preferência pela rede externa `fedora-net`.
 
 ---
 *Ecossistema de Infraestrutura Marcelo's Systems & AIKnow - 2026*
