@@ -1,0 +1,536 @@
+{
+  "schemaVersion": 2,
+  "configProperties": {
+    "name": "default"
+  },
+  "categories": [],
+  "wrappers": [
+    {
+      "id": "default",
+      "position": 0
+    }
+  ],
+  "apps": [
+    {
+      "id": "app-monitor",
+      "name": "Monitor",
+      "url": "http://fedora.taild42ed2.ts.net:8090",
+      "behaviour": {
+        "onClickUrl": "http://fedora.taild42ed2.ts.net:8090",
+        "isOpeningNewTab": true,
+        "externalUrl": ""
+      },
+      "network": {
+        "enabledStatusChecker": true,
+        "statusCodes": [
+          "200"
+        ]
+      },
+      "appearance": {
+        "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/beszel.png",
+        "appNameStatus": "normal",
+        "positionAppName": "column",
+        "appNameFontSize": 16,
+        "lineClampAppName": 1
+      },
+      "integration": {
+        "type": null,
+        "properties": []
+      },
+      "area": {
+        "type": "wrapper",
+        "properties": {
+          "id": "default"
+        }
+      },
+      "shape": {
+        "lg": {
+          "location": {
+            "x": 4,
+            "y": 0
+          },
+          "size": {
+            "width": 2,
+            "height": 2
+          }
+        },
+        "sm": {
+          "location": {
+            "x": 1,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        }
+      }
+    },
+    {
+      "id": "app-n8n",
+      "name": "n8n",
+      "url": "http://fedora.taild42ed2.ts.net/n8n/",
+      "behaviour": {
+        "onClickUrl": "http://fedora.taild42ed2.ts.net/n8n/",
+        "isOpeningNewTab": true,
+        "externalUrl": ""
+      },
+      "network": {
+        "enabledStatusChecker": true,
+        "statusCodes": [
+          "200"
+        ]
+      },
+      "appearance": {
+        "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/n8n.png",
+        "appNameStatus": "normal",
+        "positionAppName": "column",
+        "appNameFontSize": 16,
+        "lineClampAppName": 1
+      },
+      "integration": {
+        "type": null,
+        "properties": []
+      },
+      "area": {
+        "type": "wrapper",
+        "properties": {
+          "id": "default"
+        }
+      },
+      "shape": {
+        "lg": {
+          "location": {
+            "x": 2,
+            "y": 0
+          },
+          "size": {
+            "width": 2,
+            "height": 2
+          }
+        },
+        "sm": {
+          "location": {
+            "x": 2,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        }
+      }
+    },
+    {
+      "id": "app-jardim",
+      "name": "Jardim Digital",
+      "url": "http://fedora.taild42ed2.ts.net/",
+      "behaviour": {
+        "onClickUrl": "http://fedora.taild42ed2.ts.net/",
+        "isOpeningNewTab": true,
+        "externalUrl": ""
+      },
+      "network": {
+        "enabledStatusChecker": true,
+        "statusCodes": [
+          "200"
+        ]
+      },
+      "appearance": {
+        "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/silverbullet.png",
+        "appNameStatus": "normal",
+        "positionAppName": "column",
+        "appNameFontSize": 16,
+        "lineClampAppName": 1
+      },
+      "integration": {
+        "type": null,
+        "properties": []
+      },
+      "area": {
+        "type": "wrapper",
+        "properties": {
+          "id": "default"
+        }
+      },
+      "shape": {
+        "lg": {
+          "location": {
+            "x": 8,
+            "y": 0
+          },
+          "size": {
+            "width": 2,
+            "height": 2
+          }
+        },
+        "sm": {
+          "location": {
+            "x": 0,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        }
+      }
+    },
+    {
+      "id": "app-financeiro",
+      "name": "Financeiro",
+      "url": "http://fedora.taild42ed2.ts.net/financeiro/",
+      "behaviour": {
+        "onClickUrl": "http://fedora.taild42ed2.ts.net/financeiro/",
+        "isOpeningNewTab": true,
+        "externalUrl": ""
+      },
+      "network": {
+        "enabledStatusChecker": true,
+        "statusCodes": [
+          "200"
+        ]
+      },
+      "appearance": {
+        "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/gnucash.png",
+        "appNameStatus": "normal",
+        "positionAppName": "column",
+        "appNameFontSize": 16,
+        "lineClampAppName": 1
+      },
+      "integration": {
+        "type": null,
+        "properties": []
+      },
+      "area": {
+        "type": "wrapper",
+        "properties": {
+          "id": "default"
+        }
+      },
+      "shape": {
+        "lg": {
+          "location": {
+            "x": 0,
+            "y": 0
+          },
+          "size": {
+            "width": 2,
+            "height": 2
+          }
+        },
+        "sm": {
+          "location": {
+            "x": 0,
+            "y": 3
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        }
+      }
+    },
+    {
+      "id": "app-backup",
+      "name": "Backup",
+      "url": "http://fedora.taild42ed2.ts.net:51515",
+      "behaviour": {
+        "onClickUrl": "http://fedora.taild42ed2.ts.net:51515",
+        "isOpeningNewTab": true,
+        "externalUrl": ""
+      },
+      "network": {
+        "enabledStatusChecker": true,
+        "statusCodes": [
+          "200"
+        ]
+      },
+      "appearance": {
+        "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/kopia.png",
+        "appNameStatus": "normal",
+        "positionAppName": "column",
+        "appNameFontSize": 16,
+        "lineClampAppName": 1
+      },
+      "integration": {
+        "type": null,
+        "properties": []
+      },
+      "area": {
+        "type": "wrapper",
+        "properties": {
+          "id": "default"
+        }
+      },
+      "shape": {
+        "lg": {
+          "location": {
+            "x": 6,
+            "y": 0
+          },
+          "size": {
+            "width": 2,
+            "height": 2
+          }
+        },
+        "sm": {
+          "location": {
+            "x": 1,
+            "y": 3
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        }
+      }
+    },
+    {
+      "id": "app-portainer",
+      "name": "Portainer",
+      "url": "http://fedora.taild42ed2.ts.net/portainer/",
+      "behaviour": {
+        "onClickUrl": "http://fedora.taild42ed2.ts.net/portainer/",
+        "isOpeningNewTab": true,
+        "externalUrl": ""
+      },
+      "network": {
+        "enabledStatusChecker": true,
+        "statusCodes": [
+          "200"
+        ]
+      },
+      "appearance": {
+        "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/portainer.png",
+        "appNameStatus": "normal",
+        "positionAppName": "column",
+        "appNameFontSize": 16,
+        "lineClampAppName": 1
+      },
+      "integration": {
+        "type": null,
+        "properties": []
+      },
+      "area": {
+        "type": "wrapper",
+        "properties": {
+          "id": "default"
+        }
+      },
+      "shape": {
+        "lg": {
+          "location": {
+            "x": 0,
+            "y": 2
+          },
+          "size": {
+            "width": 2,
+            "height": 2
+          }
+        },
+        "sm": {
+          "location": {
+            "x": 0,
+            "y": 4
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        }
+      }
+    },
+    {
+      "id": "app-dozzle",
+      "name": "Docker Logs",
+      "url": "http://fedora.taild42ed2.ts.net:8888",
+      "behaviour": {
+        "onClickUrl": "http://fedora.taild42ed2.ts.net:8888",
+        "isOpeningNewTab": true,
+        "externalUrl": ""
+      },
+      "network": {
+        "enabledStatusChecker": true,
+        "statusCodes": [
+          "200"
+        ]
+      },
+      "appearance": {
+        "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/dozzle.png",
+        "appNameStatus": "normal",
+        "positionAppName": "column",
+        "appNameFontSize": 16,
+        "lineClampAppName": 1
+      },
+      "integration": {
+        "type": null,
+        "properties": []
+      },
+      "area": {
+        "type": "wrapper",
+        "properties": {
+          "id": "default"
+        }
+      },
+      "shape": {
+        "lg": {
+          "location": {
+            "x": 2,
+            "y": 2
+          },
+          "size": {
+            "width": 2,
+            "height": 2
+          }
+        },
+        "sm": {
+          "location": {
+            "x": 1,
+            "y": 4
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        }
+      }
+    }
+  ],
+  "widgets": [
+    {
+      "id": "2bf52e46-53b1-4948-b5d7-db380d1eb9a3",
+      "type": "weather",
+      "properties": {
+        "displayInFahrenheit": false,
+        "displayCityName": true,
+        "displayWeekly": false,
+        "forecastDays": 5,
+        "location": {
+          "name": "São Paulo",
+          "latitude": -23.5475,
+          "longitude": -46.63611
+        }
+      },
+      "area": {
+        "type": "wrapper",
+        "properties": {
+          "id": "default"
+        }
+      },
+      "shape": {
+        "sm": {
+          "location": {
+            "x": 0,
+            "y": 0
+          },
+          "size": {
+            "width": 3,
+            "height": 2
+          }
+        },
+        "md": {
+          "location": {
+            "x": 0,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "lg": {
+          "location": {
+            "x": 0,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        }
+      }
+    },
+    {
+      "id": "a50c9f25-45fe-48f8-ad19-da02efa6a152",
+      "type": "date",
+      "properties": {
+        "timezone": "America/Sao_Paulo",
+        "customTitle": "",
+        "display24HourFormat": true,
+        "dateFormat": "dddd, MMMM D",
+        "titleState": "both"
+      },
+      "area": {
+        "type": "wrapper",
+        "properties": {
+          "id": "default"
+        }
+      },
+      "shape": {
+        "sm": {
+          "location": {
+            "x": 2,
+            "y": 3
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "md": {
+          "location": {
+            "x": 0,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "lg": {
+          "location": {
+            "x": 0,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        }
+      }
+    }
+  ],
+  "settings": {
+    "common": {
+      "searchEngine": {
+        "type": "google",
+        "properties": {}
+      }
+    },
+    "customization": {
+      "layout": {
+        "enabledLeftSidebar": false,
+        "enabledRightSidebar": false,
+        "enabledDocker": true,
+        "enabledPing": true,
+        "enabledSearchbar": true
+      },
+      "pageTitle": "Sistemas Marcelo 🚀",
+      "colors": {
+        "primary": "indigo",
+        "secondary": "slate",
+        "shade": 8
+      },
+      "appOpacity": 100,
+      "gridstack": {
+        "columnCountSmall": 3,
+        "columnCountMedium": 6,
+        "columnCountLarge": 10
+      }
+    },
+    "access": {
+      "allowGuests": true
+    }
+  }
+}
