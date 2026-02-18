@@ -12,58 +12,30 @@
   ],
   "apps": [
     {
-      "id": "app-monitor",
-      "name": "Monitor",
-      "url": "http://fedora.taild42ed2.ts.net:8090",
+      "id": "app-financeiro",
+      "name": "Financeiro",
+      "url": "http://fedora.taild42ed2.ts.net/financeiro/",
       "behaviour": {
-        "onClickUrl": "http://fedora.taild42ed2.ts.net:8090",
+        "onClickUrl": "http://fedora.taild42ed2.ts.net/financeiro/",
         "isOpeningNewTab": true,
         "externalUrl": ""
       },
       "network": {
         "enabledStatusChecker": true,
-        "statusCodes": [
-          "200"
-        ]
+        "statusCodes": ["200"]
       },
       "appearance": {
-        "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/beszel.png",
+        "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/gnucash.png",
         "appNameStatus": "normal",
         "positionAppName": "column",
         "appNameFontSize": 16,
         "lineClampAppName": 1
       },
-      "integration": {
-        "type": null,
-        "properties": []
-      },
-      "area": {
-        "type": "wrapper",
-        "properties": {
-          "id": "default"
-        }
-      },
+      "integration": { "type": null, "properties": [] },
+      "area": { "type": "wrapper", "properties": { "id": "default" } },
       "shape": {
-        "lg": {
-          "location": {
-            "x": 4,
-            "y": 0
-          },
-          "size": {
-            "width": 2,
-            "height": 2
-          }
-        },
-        "sm": {
-          "location": {
-            "x": 1,
-            "y": 0
-          },
-          "size": {
-            "width": 1,
-            "height": 1
-          }
-        }
+        "lg": { "location": { "x": 0, "y": 0 }, "size": { "width": 2, "height": 2 } },
+        "sm": { "location": { "x": 0, "y": 3 }, "size": { "width": 1, "height": 1 } }
       }
     },
     {
@@ -77,9 +49,7 @@
       },
       "network": {
         "enabledStatusChecker": true,
-        "statusCodes": [
-          "200"
-        ]
+        "statusCodes": ["200"]
       },
       "appearance": {
         "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/n8n.png",
@@ -88,163 +58,52 @@
         "appNameFontSize": 16,
         "lineClampAppName": 1
       },
-      "integration": {
-        "type": null,
-        "properties": []
-      },
-      "area": {
-        "type": "wrapper",
-        "properties": {
-          "id": "default"
-        }
-      },
+      "integration": { "type": null, "properties": [] },
+      "area": { "type": "wrapper", "properties": { "id": "default" } },
       "shape": {
-        "lg": {
-          "location": {
-            "x": 2,
-            "y": 0
-          },
-          "size": {
-            "width": 2,
-            "height": 2
-          }
-        },
-        "sm": {
-          "location": {
-            "x": 2,
-            "y": 0
-          },
-          "size": {
-            "width": 1,
-            "height": 1
-          }
-        }
+        "lg": { "location": { "x": 2, "y": 0 }, "size": { "width": 2, "height": 2 } },
+        "sm": { "location": { "x": 2, "y": 0 }, "size": { "width": 1, "height": 1 } }
       }
     },
     {
-      "id": "app-jardim",
-      "name": "Jardim Digital",
-      "url": "http://fedora.taild42ed2.ts.net/",
+      "id": "app-monitor",
+      "name": "Monitor",
+      "url": "http://fedora.taild42ed2.ts.net/monitor/",
       "behaviour": {
-        "onClickUrl": "http://fedora.taild42ed2.ts.net/",
+        "onClickUrl": "http://fedora.taild42ed2.ts.net/monitor/",
         "isOpeningNewTab": true,
         "externalUrl": ""
       },
       "network": {
         "enabledStatusChecker": true,
-        "statusCodes": [
-          "200"
-        ]
+        "statusCodes": ["200"]
       },
       "appearance": {
-        "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/silverbullet.png",
+        "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/beszel.png",
         "appNameStatus": "normal",
         "positionAppName": "column",
         "appNameFontSize": 16,
         "lineClampAppName": 1
       },
-      "integration": {
-        "type": null,
-        "properties": []
-      },
-      "area": {
-        "type": "wrapper",
-        "properties": {
-          "id": "default"
-        }
-      },
+      "integration": { "type": null, "properties": [] },
+      "area": { "type": "wrapper", "properties": { "id": "default" } },
       "shape": {
-        "lg": {
-          "location": {
-            "x": 8,
-            "y": 0
-          },
-          "size": {
-            "width": 2,
-            "height": 2
-          }
-        },
-        "sm": {
-          "location": {
-            "x": 0,
-            "y": 0
-          },
-          "size": {
-            "width": 1,
-            "height": 1
-          }
-        }
-      }
-    },
-    {
-      "id": "app-financeiro",
-      "name": "Financeiro",
-      "url": "http://fedora.taild42ed2.ts.net/financeiro/",
-      "behaviour": {
-        "onClickUrl": "http://fedora.taild42ed2.ts.net/financeiro/",
-        "isOpeningNewTab": true,
-        "externalUrl": ""
-      },
-      "network": {
-        "enabledStatusChecker": true,
-        "statusCodes": [
-          "200"
-        ]
-      },
-      "appearance": {
-        "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/gnucash.png",
-        "appNameStatus": "normal",
-        "positionAppName": "column",
-        "appNameFontSize": 16,
-        "lineClampAppName": 1
-      },
-      "integration": {
-        "type": null,
-        "properties": []
-      },
-      "area": {
-        "type": "wrapper",
-        "properties": {
-          "id": "default"
-        }
-      },
-      "shape": {
-        "lg": {
-          "location": {
-            "x": 0,
-            "y": 0
-          },
-          "size": {
-            "width": 2,
-            "height": 2
-          }
-        },
-        "sm": {
-          "location": {
-            "x": 0,
-            "y": 3
-          },
-          "size": {
-            "width": 1,
-            "height": 1
-          }
-        }
+        "lg": { "location": { "x": 4, "y": 0 }, "size": { "width": 2, "height": 2 } },
+        "sm": { "location": { "x": 1, "y": 0 }, "size": { "width": 1, "height": 1 } }
       }
     },
     {
       "id": "app-backup",
       "name": "Backup",
-      "url": "http://fedora.taild42ed2.ts.net:51515",
+      "url": "http://fedora.taild42ed2.ts.net/backup/",
       "behaviour": {
-        "onClickUrl": "http://fedora.taild42ed2.ts.net:51515",
+        "onClickUrl": "http://fedora.taild42ed2.ts.net/backup/",
         "isOpeningNewTab": true,
         "externalUrl": ""
       },
       "network": {
         "enabledStatusChecker": true,
-        "statusCodes": [
-          "200"
-        ]
+        "statusCodes": ["200"]
       },
       "appearance": {
         "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/kopia.png",
@@ -253,37 +112,38 @@
         "appNameFontSize": 16,
         "lineClampAppName": 1
       },
-      "integration": {
-        "type": null,
-        "properties": []
-      },
-      "area": {
-        "type": "wrapper",
-        "properties": {
-          "id": "default"
-        }
-      },
+      "integration": { "type": null, "properties": [] },
+      "area": { "type": "wrapper", "properties": { "id": "default" } },
       "shape": {
-        "lg": {
-          "location": {
-            "x": 6,
-            "y": 0
-          },
-          "size": {
-            "width": 2,
-            "height": 2
-          }
-        },
-        "sm": {
-          "location": {
-            "x": 1,
-            "y": 3
-          },
-          "size": {
-            "width": 1,
-            "height": 1
-          }
-        }
+        "lg": { "location": { "x": 6, "y": 0 }, "size": { "width": 2, "height": 2 } },
+        "sm": { "location": { "x": 1, "y": 3 }, "size": { "width": 1, "height": 1 } }
+      }
+    },
+    {
+      "id": "app-jardim",
+      "name": "Jardim Digital",
+      "url": "http://fedora.taild42ed2.ts.net/notes/",
+      "behaviour": {
+        "onClickUrl": "http://fedora.taild42ed2.ts.net/notes/",
+        "isOpeningNewTab": true,
+        "externalUrl": ""
+      },
+      "network": {
+        "enabledStatusChecker": true,
+        "statusCodes": ["200"]
+      },
+      "appearance": {
+        "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/silverbullet.png",
+        "appNameStatus": "normal",
+        "positionAppName": "column",
+        "appNameFontSize": 16,
+        "lineClampAppName": 1
+      },
+      "integration": { "type": null, "properties": [] },
+      "area": { "type": "wrapper", "properties": { "id": "default" } },
+      "shape": {
+        "lg": { "location": { "x": 8, "y": 0 }, "size": { "width": 2, "height": 2 } },
+        "sm": { "location": { "x": 0, "y": 0 }, "size": { "width": 1, "height": 1 } }
       }
     },
     {
@@ -297,9 +157,7 @@
       },
       "network": {
         "enabledStatusChecker": true,
-        "statusCodes": [
-          "200"
-        ]
+        "statusCodes": ["200"]
       },
       "appearance": {
         "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/portainer.png",
@@ -308,53 +166,25 @@
         "appNameFontSize": 16,
         "lineClampAppName": 1
       },
-      "integration": {
-        "type": null,
-        "properties": []
-      },
-      "area": {
-        "type": "wrapper",
-        "properties": {
-          "id": "default"
-        }
-      },
+      "integration": { "type": null, "properties": [] },
+      "area": { "type": "wrapper", "properties": { "id": "default" } },
       "shape": {
-        "lg": {
-          "location": {
-            "x": 0,
-            "y": 2
-          },
-          "size": {
-            "width": 2,
-            "height": 2
-          }
-        },
-        "sm": {
-          "location": {
-            "x": 0,
-            "y": 4
-          },
-          "size": {
-            "width": 1,
-            "height": 1
-          }
-        }
+        "lg": { "location": { "x": 0, "y": 2 }, "size": { "width": 2, "height": 2 } },
+        "sm": { "location": { "x": 0, "y": 4 }, "size": { "width": 1, "height": 1 } }
       }
     },
     {
       "id": "app-dozzle",
       "name": "Docker Logs",
-      "url": "http://fedora.taild42ed2.ts.net:8888",
+      "url": "http://fedora.taild42ed2.ts.net/dozzle/",
       "behaviour": {
-        "onClickUrl": "http://fedora.taild42ed2.ts.net:8888",
+        "onClickUrl": "http://fedora.taild42ed2.ts.net/dozzle/",
         "isOpeningNewTab": true,
         "externalUrl": ""
       },
       "network": {
         "enabledStatusChecker": true,
-        "statusCodes": [
-          "200"
-        ]
+        "statusCodes": ["200"]
       },
       "appearance": {
         "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/dozzle.png",
@@ -363,37 +193,92 @@
         "appNameFontSize": 16,
         "lineClampAppName": 1
       },
-      "integration": {
-        "type": null,
-        "properties": []
-      },
-      "area": {
-        "type": "wrapper",
-        "properties": {
-          "id": "default"
-        }
-      },
+      "integration": { "type": null, "properties": [] },
+      "area": { "type": "wrapper", "properties": { "id": "default" } },
       "shape": {
-        "lg": {
-          "location": {
-            "x": 2,
-            "y": 2
-          },
-          "size": {
-            "width": 2,
-            "height": 2
-          }
-        },
-        "sm": {
-          "location": {
-            "x": 1,
-            "y": 4
-          },
-          "size": {
-            "width": 1,
-            "height": 1
-          }
-        }
+        "lg": { "location": { "x": 2, "y": 2 }, "size": { "width": 2, "height": 2 } },
+        "sm": { "location": { "x": 1, "y": 4 }, "size": { "width": 1, "height": 1 } }
+      }
+    },
+    {
+      "id": "app-nocodb",
+      "name": "NocoDB",
+      "url": "http://fedora.taild42ed2.ts.net/nocodb/dashboard/",
+      "behaviour": {
+        "onClickUrl": "http://fedora.taild42ed2.ts.net/nocodb/dashboard/",
+        "isOpeningNewTab": true,
+        "externalUrl": ""
+      },
+      "network": {
+        "enabledStatusChecker": true,
+        "statusCodes": ["200", "302"]
+      },
+      "appearance": {
+        "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/nocodb.png",
+        "appNameStatus": "normal",
+        "positionAppName": "column",
+        "appNameFontSize": 16,
+        "lineClampAppName": 1
+      },
+      "integration": { "type": null, "properties": [] },
+      "area": { "type": "wrapper", "properties": { "id": "default" } },
+      "shape": {
+        "lg": { "location": { "x": 4, "y": 2 }, "size": { "width": 2, "height": 2 } },
+        "sm": { "location": { "x": 0, "y": 5 }, "size": { "width": 1, "height": 1 } }
+      }
+    },
+    {
+      "id": "app-qdrant",
+      "name": "Qdrant",
+      "url": "http://fedora.taild42ed2.ts.net/qdrant/dashboard",
+      "behaviour": {
+        "onClickUrl": "http://fedora.taild42ed2.ts.net/qdrant/dashboard",
+        "isOpeningNewTab": true,
+        "externalUrl": ""
+      },
+      "network": {
+        "enabledStatusChecker": true,
+        "statusCodes": ["200"]
+      },
+      "appearance": {
+        "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/qdrant.png",
+        "appNameStatus": "normal",
+        "positionAppName": "column",
+        "appNameFontSize": 16,
+        "lineClampAppName": 1
+      },
+      "integration": { "type": null, "properties": [] },
+      "area": { "type": "wrapper", "properties": { "id": "default" } },
+      "shape": {
+        "lg": { "location": { "x": 6, "y": 2 }, "size": { "width": 2, "height": 2 } },
+        "sm": { "location": { "x": 1, "y": 5 }, "size": { "width": 1, "height": 1 } }
+      }
+    },
+    {
+      "id": "app-supabase",
+      "name": "Supabase",
+      "url": "http://fedora.taild42ed2.ts.net/supabase-studio/",
+      "behaviour": {
+        "onClickUrl": "http://fedora.taild42ed2.ts.net/supabase-studio/",
+        "isOpeningNewTab": true,
+        "externalUrl": ""
+      },
+      "network": {
+        "enabledStatusChecker": true,
+        "statusCodes": ["200", "307"]
+      },
+      "appearance": {
+        "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/supabase.png",
+        "appNameStatus": "normal",
+        "positionAppName": "column",
+        "appNameFontSize": 16,
+        "lineClampAppName": 1
+      },
+      "integration": { "type": null, "properties": [] },
+      "area": { "type": "wrapper", "properties": { "id": "default" } },
+      "shape": {
+        "lg": { "location": { "x": 8, "y": 2 }, "size": { "width": 2, "height": 2 } },
+        "sm": { "location": { "x": 2, "y": 5 }, "size": { "width": 1, "height": 1 } }
       }
     }
   ],
@@ -412,43 +297,11 @@
           "longitude": -46.63611
         }
       },
-      "area": {
-        "type": "wrapper",
-        "properties": {
-          "id": "default"
-        }
-      },
+      "area": { "type": "wrapper", "properties": { "id": "default" } },
       "shape": {
-        "sm": {
-          "location": {
-            "x": 0,
-            "y": 0
-          },
-          "size": {
-            "width": 3,
-            "height": 2
-          }
-        },
-        "md": {
-          "location": {
-            "x": 0,
-            "y": 0
-          },
-          "size": {
-            "width": 1,
-            "height": 1
-          }
-        },
-        "lg": {
-          "location": {
-            "x": 0,
-            "y": 0
-          },
-          "size": {
-            "width": 1,
-            "height": 1
-          }
-        }
+        "sm": { "location": { "x": 0, "y": 0 }, "size": { "width": 3, "height": 2 } },
+        "md": { "location": { "x": 0, "y": 0 }, "size": { "width": 1, "height": 1 } },
+        "lg": { "location": { "x": 0, "y": 0 }, "size": { "width": 1, "height": 1 } }
       }
     },
     {
@@ -461,43 +314,11 @@
         "dateFormat": "dddd, MMMM D",
         "titleState": "both"
       },
-      "area": {
-        "type": "wrapper",
-        "properties": {
-          "id": "default"
-        }
-      },
+      "area": { "type": "wrapper", "properties": { "id": "default" } },
       "shape": {
-        "sm": {
-          "location": {
-            "x": 2,
-            "y": 3
-          },
-          "size": {
-            "width": 1,
-            "height": 1
-          }
-        },
-        "md": {
-          "location": {
-            "x": 0,
-            "y": 0
-          },
-          "size": {
-            "width": 1,
-            "height": 1
-          }
-        },
-        "lg": {
-          "location": {
-            "x": 0,
-            "y": 0
-          },
-          "size": {
-            "width": 1,
-            "height": 1
-          }
-        }
+        "sm": { "location": { "x": 2, "y": 3 }, "size": { "width": 1, "height": 1 } },
+        "md": { "location": { "x": 0, "y": 0 }, "size": { "width": 1, "height": 1 } },
+        "lg": { "location": { "x": 0, "y": 0 }, "size": { "width": 1, "height": 1 } }
       }
     }
   ],
