@@ -68,9 +68,9 @@
     {
       "id": "app-monitor",
       "name": "Monitor",
-      "url": "http://fedora.taild42ed2.ts.net/monitor/",
+      "url": "http://fedora.taild42ed2.ts.net:8090",
       "behaviour": {
-        "onClickUrl": "http://fedora.taild42ed2.ts.net/monitor/",
+        "onClickUrl": "http://fedora.taild42ed2.ts.net:8090",
         "isOpeningNewTab": true,
         "externalUrl": ""
       },
@@ -95,9 +95,9 @@
     {
       "id": "app-backup",
       "name": "Backup",
-      "url": "http://fedora.taild42ed2.ts.net/backup/",
+      "url": "http://fedora.taild42ed2.ts.net:51515",
       "behaviour": {
-        "onClickUrl": "http://fedora.taild42ed2.ts.net/backup/",
+        "onClickUrl": "http://fedora.taild42ed2.ts.net:51515",
         "isOpeningNewTab": true,
         "externalUrl": ""
       },
