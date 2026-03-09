@@ -21,7 +21,7 @@ Abaixo, a descrição técnica do que você encontrará em cada pasta dentro de 
 
 ### 🛡️ Monitoramento & Infraestrutura
 - **`uptime-kuma/`**: Painel de monitoramento de status para sites e APIs com notificações em tempo real.
-- **`beszel/`**: Agente de monitoramento leve para visualizar recursos de hardware (CPU, RAM, Disco) do host Fedora.
+- **`beszel/`**: Stack de monitoramento leve com `setup.sh` para Ubuntu 22.04 no WSL2, incluindo healthchecks do Hub e do Agent.
 - **`kopia/`**: Gerenciador de backups criptografados e incrementais para proteger os volumes do Docker.
 
 ## 🚀 Como Utilizar
@@ -38,6 +38,15 @@ cp .env.example .env
 ```bash
 docker-compose up -d
 ```
+
+### 3. Setup Guiado do Beszel
+Para a stack do Beszel:
+```bash
+cd stacks/beszel
+./setup.sh
+```
+
+O script sobe o Hub primeiro, cria o `.env` com placeholders e so ativa o Agent quando `BESZEL_AGENT_TOKEN` e `BESZEL_AGENT_KEY` forem preenchidos.
 
 ## 📏 Regras e Padrões
 1. **Persistência:** Dados críticos estão mapeados em pastas locais para facilitar backups via Kopia.
